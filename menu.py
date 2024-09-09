@@ -1,7 +1,7 @@
-import pygame
 import sys
+import moveis
 
-def menu():
+def menu(pygame):
     # Inicializa o Pygame
     pygame.init()
 
@@ -67,6 +67,7 @@ def menu():
                             with open('input_data.txt', 'w') as file:
                                 file.write(f'{largura_casa} {altura_casa}')
                             pygame.quit()
+                            moveis.get_escala()
                             return
 
                     else:

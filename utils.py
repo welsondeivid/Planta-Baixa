@@ -1,4 +1,5 @@
 import pygame
+import moveis
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -8,37 +9,49 @@ RED = (255, 0, 0)
 
 LINE_WIDTH = 1
 
-tiles = {}
+# Função para desenhar o porão
+def draw_basement(screen, width, height):
+    x, y = coords(screen, width, height)
+    pygame.draw.rect(screen, BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno do porão
 
-tile_width = 50
-tile_height = 50
+# Função para desenhar o térreo
+def draw_ground_floor(screen, width, height):
+    x, y = coords(screen, width, height)
+    pygame.draw.rect(screen, BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno externo
 
-def create_tiles(largura_casa, altura_casa, current_floor):
-    global tiles  # Certifique-se de atualizar o dicionário global
-    tile_size = 50
-    tiles = {}  # Limpa o dicionário existente
-    n = largura_casa // tile_size
-    m = altura_casa // tile_size
+# Função para desenhar o andar superior
+def draw_upper_floor(screen, width, height):
+    x, y = coords(screen, width, height)
+    pygame.draw.rect(screen, BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno do andar superior
 
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            x = (i - 1) * tile_size
-            y = (j - 1) * tile_size
-            tile_name = f"{current_floor}_tile_{i}_{j}"
-            tiles[tile_name] = {'andar': current_floor, 'x': x, 'y': y, 'ocupado': False}
+def draw_rooms(screen, rooms):
+    for room in rooms:
+        comodo, x, y, width, height = room
+        pygame.draw.rect(screen, GREEN, (x, y, width, height), LINE_WIDTH)
 
-def colorir_tile(tile_name, color, screen):
-    if tile_name in tiles:
-        tile = tiles[tile_name]
-        x, y = tile['x'], tile['y']
-        pygame.draw.rect(screen, color, (x, y, tile_width, tile_height))
+        moveis.draw_furnitures(screen, comodo, x, y, width, height)
 
-def draw_grid(screen, width, height):
-    start_x, start_y = coords(screen, width, height)
-    for x in range(start_x, start_x + width, tile_width):
-        pygame.draw.line(screen, BLACK, (x, start_y), (x, start_y + height))
-    for y in range(start_y, start_y + height, tile_height):
-        pygame.draw.line(screen, BLACK, (start_x, y), (start_x + width, y))
+# Função para desenhar a planta baixa do andar selecionado
+def draw_floor_plan(screen, floor, largura_casa, altura_casa):
+    screen.fill(WHITE)
+
+    escala = moveis.get_escala()
+
+    ROOMS = [
+        [["bedroom", 100*escala, 300*escala, 50*escala, 50*escala], ["bath", 500*escala, 800*escala, 200*escala, 120*escala]],
+        [["dinnerroom,", 200*escala, 300*escala, 700*escala, 300*escala], ["livingroom", 500*escala, 800*escala, 200*escala, 120*escala]],
+        [["playroom", 100*escala, 300*escala, 300*escala, 120*escala], ["socialbath", 100*escala, 400*escala, 250*escala, 200*escala]]
+    ]
+
+    if floor == 'basement':
+        draw_basement(screen, largura_casa, altura_casa)
+        draw_rooms(screen, ROOMS[0])
+    elif floor == 'ground':
+        draw_ground_floor(screen, largura_casa, altura_casa)
+        draw_rooms(screen, ROOMS[1])
+    elif floor == 'upper':
+        draw_upper_floor(screen, largura_casa, altura_casa)
+        draw_rooms(screen, ROOMS[2])
 
 def coords(screen, width, height):
     x = (screen.get_width() - width) // 2
