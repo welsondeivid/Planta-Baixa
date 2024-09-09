@@ -35,4 +35,6 @@ def draw_furnitures(screen, comodo, x, y, width, height):
         Y = random.randint(y, y + height - sofa2[1])
 
         # Desenha o sofá na tela
-        pygame.draw.rect(screen, SOFA, (X, Y, X + sofa2[0], Y + sofa2[1]))
+        pygame.draw.rect(screen, SOFA, (X, Y, sofa2[0], sofa2[1]))
+
+        print(sofa2[1], y, y + height - sofa2[1])

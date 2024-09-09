@@ -25,6 +25,8 @@ def planta(pygame):
     current_floor = 'ground'
     # fullscreen = False
 
+    ######GERAR OS MOVEIS AQUI#############
+
     # Loop principal
     while True:
         for event in pygame.event.get():

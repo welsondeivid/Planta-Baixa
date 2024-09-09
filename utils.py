@@ -38,9 +38,9 @@ def draw_floor_plan(screen, floor, largura_casa, altura_casa):
     escala = moveis.get_escala()
 
     ROOMS = [
-        [["bedroom", 100*escala, 300*escala, 50*escala, 50*escala], ["bath", 500*escala, 800*escala, 200*escala, 120*escala]],
-        [["dinnerroom,", 200*escala, 300*escala, 700*escala, 300*escala], ["livingroom", 500*escala, 800*escala, 200*escala, 120*escala]],
-        [["playroom", 100*escala, 300*escala, 300*escala, 120*escala], ["socialbath", 100*escala, 400*escala, 250*escala, 200*escala]]
+        [["bedroom", 100, 300, 4*escala, 3*escala], ["bath", 500, 800, 1.5*escala, 2*escala]],
+        [["dinnerroom,", 200, 300, 3*escala, 5*escala], ["livingroom", 500, 300, 5*escala, 6*escala]],
+        [["playroom", 100, 300, 6*escala, 5*escala], ["socialbath", 100, 400, 2*escala, 4*escala]]
     ]
 
     if floor == 'basement':
