@@ -1,5 +1,6 @@
 import pygame
 import random
+import utils as ut
 
 pygame.init()
 
@@ -9,22 +10,10 @@ largura_tela, altura_tela = info.current_w, info.current_h
 #Cores dos moveis
 SOFA = (255, 0, 0)
 
-AREA_MAX_PIXEL = 1920 * 1080
-PIXEL_METRO = 110
 LINE_WIDTH = 1
 
-def get_escala():
-
-    with open('input_data.txt', 'r') as file:
-        data = file.readline().strip()
-        largura_casa, altura_casa = map(int, data.split(' '))
-
-    escala = (largura_casa * altura_casa) / AREA_MAX_PIXEL
-    escala_pixel = round(PIXEL_METRO * escala)
-    return escala_pixel
-
-def draw_furnitures(screen, comodo, x, y, width, height):
-    escala = get_escala()
+def draw_furnitures(screen, comodo, x, y, width, height, largura_casa, altura_casa):
+    escala = ut.get_escala(largura_casa, altura_casa)
 
     if comodo == "livingroom":
         # Calcula o tamanho do sofá com base na escala

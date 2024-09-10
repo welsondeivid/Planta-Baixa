@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+#variaveis
+input_data.txt
+
 # Distribution / packaging
 .Python
 build/

@@ -13,6 +13,9 @@ def planta(pygame):
     # Configurando a janela
     info = pygame.display.Info()
     largura_tela, altura_tela = info.current_w, info.current_h
+
+    largura_casa, altura_casa = ut.set_escala(largura_tela, altura_tela, largura_casa, altura_casa)
+
     planta = pygame.display.set_mode((largura_tela, altura_tela))
     pygame.display.set_caption("Térreo")
 
@@ -37,17 +40,14 @@ def planta(pygame):
                 if event.key == pygame.K_b:
                     current_floor = 'basement'
                     pygame.display.set_caption("Porão")
-                    # print(ut.tiles)
 
                 elif event.key == pygame.K_g:
                     current_floor = 'ground'
                     pygame.display.set_caption("Térreo")
-                    # print(ut.tiles)
                     
                 elif event.key == pygame.K_u:
                     current_floor = 'upper'
                     pygame.display.set_caption("Primeiro Andar")
-                    # print(ut.tiles)
 
                 # elif event.key == pygame.K_p:
                 #     coord = coords(planta, largura_casa, altura_casa)
