@@ -98,7 +98,7 @@ def escolher_todos_moveis(rooms, moveis, escala):
     return moveis_escolhidos
 
 def posicao_valida(movel, moveis_existentes, medidas):
-    return True
+    # return True
     # Verifica se o móvel está dentro dos limites do cômodo
     if movel.x < medidas[0] or movel.y < medidas[1] or \
        movel.x + movel.largura > medidas[0] + medidas[2] or \

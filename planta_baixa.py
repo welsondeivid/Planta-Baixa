@@ -32,7 +32,7 @@ def planta(pygame):
 
     ######GERAR OS MOVEIS AQUI#############
     ROOMS = [
-        [["bedroom", 100, 300, 4 * escala, 3 * escala], ["bathroom", 500, 800, 2 * escala, 2 * escala]],
+        [["bedroom", 100, 300, 4 * escala, 3 * escala], ["bathroom", 500, 800, 2 * escala, 4 * escala]],
         [["livingroom", 500, 300, 5 * escala, 6 * escala], ["kitchen", 900, 800, 4 * escala, 3 * escala], ["diningroom", 100, 100, 4 * escala, 4 * escala]],
         [["playroom", 100, 300, 6 * escala, 5 * escala], ["socialbath", 800, 300, 2 * escala, 4 * escala]]
     ]
@@ -71,13 +71,13 @@ def planta(pygame):
         moveis.movel("Vaso sanitário", 0.37, 0.64, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "bathroom")),
         moveis.movel("Banheira", 0.71, 1.65, cor.SANDY_BROWN, escala, ut.encontrar_comodo(ROOMS, "bathroom")),
         moveis.movel("Pia com armário", 0.70, 0.45, cor.DARK_BLUE, escala, ut.encontrar_comodo(ROOMS, "bathroom")),
-        moveis.movel("Box de banheiro", 1.50, 2.00, cor.BLACK, escala, ut.encontrar_comodo(ROOMS, "bathroom"))
+        # moveis.movel("Box de banheiro", 1.50, 2.00, cor.BLACK, escala, ut.encontrar_comodo(ROOMS, "bathroom"))
     ],
     "socialbath": [
         moveis.movel("Vaso sanitário", 0.37, 0.64, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "bathroom")),
         moveis.movel("Banheira", 0.71, 1.65, cor.SANDY_BROWN, escala, ut.encontrar_comodo(ROOMS, "bathroom")),
         moveis.movel("Pia com armário", 0.70, 0.45, cor.DARK_BLUE, escala, ut.encontrar_comodo(ROOMS, "bathroom")),
-        moveis.movel("Box de banheiro", 1.50, 2.00, cor.BLACK, escala, ut.encontrar_comodo(ROOMS, "bathroom"))
+        # moveis.movel("Box de banheiro", 1.50, 2.00, cor.BLACK, escala, ut.encontrar_comodo(ROOMS, "bathroom"))
     ]
 }
     # Seleciona móveis para a sala de estar (livingroom)
