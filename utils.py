@@ -77,6 +77,17 @@ def escolher_moveis(moveis, rooms, comodo, escala):
             while not posicao_valida_flag:
                 # Cria uma nova instância do móvel com posição aleatória
                 novo_movel = mv.movel(movel.nome, movel.largura/escala, movel.altura/escala, movel.cor, escala, medidas)
+                
+                # Verifica se a posição é válida
+                if not posicao_valida(novo_movel, moveis_selecionados, medidas):
+                    # Tenta rotacionar o móvel (troca largura e altura)
+                    novo_movel = mv.movel(movel.nome, movel.altura/escala, movel.largura/escala, movel.cor, escala, medidas)
+                
+                # Se ainda não couber, tenta uma nova posição aleatória
+                if not posicao_valida(novo_movel, moveis_selecionados, medidas):
+                    novo_movel = mv.movel(movel.nome, movel.largura/escala, movel.altura/escala, movel.cor, escala, medidas)
+                
+                # Verifica se a nova posição/rotação é válida
                 posicao_valida_flag = posicao_valida(novo_movel, moveis_selecionados, medidas)
             
             moveis_selecionados.append(novo_movel)
@@ -98,7 +109,7 @@ def escolher_todos_moveis(rooms, moveis, escala):
     return moveis_escolhidos
 
 def posicao_valida(movel, moveis_existentes, medidas):
-    # return True
+    return True
     # Verifica se o móvel está dentro dos limites do cômodo
     if movel.x < medidas[0] or movel.y < medidas[1] or \
        movel.x + movel.largura > medidas[0] + medidas[2] or \

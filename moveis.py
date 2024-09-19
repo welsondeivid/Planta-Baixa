@@ -17,14 +17,28 @@ def draw_furnitures(screen, comodo, moveis):
 
 class movel:
     def __init__(self, nome, largura, altura, cor, escala, medidas):
-        self.cor = cor
         self.nome = nome
         self.largura = round(largura * escala)
         self.altura = round(altura * escala)
-
-        # Gera uma posição aleatória dentro dos limites do cômodo
-        self.x = random.randint(medidas[0], medidas[0] + medidas[2] - self.largura)
-        self.y = random.randint(medidas[1], medidas[1] + medidas[3] - self.altura)
+        self.cor = cor
+        
+        # Tenta a posição inicial
+        if self.cabe(medidas):
+            self.x = random.randint(medidas[0], medidas[0] + medidas[2] - self.largura)
+            self.y = random.randint(medidas[1], medidas[1] + medidas[3] - self.altura)
+        else:
+            # Rotaciona o móvel e tenta novamente
+            self.largura, self.altura = self.altura, self.largura  # Inverte largura e altura
+            if self.cabe(medidas):
+                self.x = random.randint(medidas[0], medidas[0] + medidas[2] - self.largura)
+                self.y = random.randint(medidas[1], medidas[1] + medidas[3] - self.altura)
+            else:
+                raise ValueError(f"O móvel {nome} não cabe no cômodo, mesmo rotacionado.")
+    
+    def cabe(self, medidas):
+        # Verifica se o móvel cabe no cômodo
+        return self.largura <= medidas[2] and self.altura <= medidas[3]
+    
 
     def __repr__(self):
         return f"{self.nome}\nlargura: {self.largura}\naltura: {self.altura}\nX: {self.x}\nY: {self.y}"

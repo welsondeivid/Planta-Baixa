@@ -32,7 +32,7 @@ def planta(pygame):
 
     ######GERAR OS MOVEIS AQUI#############
     ROOMS = [
-        [["bedroom", 100, 300, 4 * escala, 3 * escala], ["bathroom", 500, 800, 2 * escala, 4 * escala]],
+        [["bedroom", 100, 300, 4 * escala, 3 * escala], ["bathroom", 500, 800, 6 * escala, 1 * escala]],
         [["livingroom", 500, 300, 5 * escala, 6 * escala], ["kitchen", 900, 800, 4 * escala, 3 * escala], ["diningroom", 100, 100, 4 * escala, 4 * escala]],
         [["playroom", 100, 300, 6 * escala, 5 * escala], ["socialbath", 800, 300, 2 * escala, 4 * escala]]
     ]
