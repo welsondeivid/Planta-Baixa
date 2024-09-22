@@ -37,6 +37,7 @@ class movel:
     
     def cabe(self, medidas):
         # Verifica se o móvel cabe no cômodo
+        # print(medidas)
         return self.largura <= medidas[2] and self.altura <= medidas[3]
     
 

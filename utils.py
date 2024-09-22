@@ -8,40 +8,42 @@ PIXEL_METRO = 110
 LINE_WIDTH = 1
 
 # Função para desenhar o porão
-def draw_basement(screen, width, height):
+def draw_laje(screen, width, height):
     x, y = coords(screen, width, height)
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno do porão
 
 # Função para desenhar o térreo
-def draw_ground_floor(screen, width, height):
+def draw_terreo_floor(screen, width, height):
     x, y = coords(screen, width, height)
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno externo
 
 # Função para desenhar o andar superior
-def draw_upper_floor(screen, width, height):
+def draw_pAndar_floor(screen, width, height):
     x, y = coords(screen, width, height)
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno do andar superior
 
 def draw_rooms(screen, rooms, moveis):
-    for room in rooms:
+    for room in rooms:  # Itera sobre cada andar
         comodo, x, y, width, height = room
         pygame.draw.rect(screen, cor.GREEN, (x, y, width, height), LINE_WIDTH)
 
+        # Desenha os móveis do cômodo atual
         mv.draw_furnitures(screen, comodo, moveis)
+
 
 # Função para desenhar a planta baixa do andar selecionado
 def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, MOVEIS):
     screen.fill(cor.WHITE)
 
-    if floor == 'basement':
-        draw_basement(screen, largura_casa, altura_casa)
-        draw_rooms(screen, ROOMS[0], MOVEIS)
-    elif floor == 'ground':
-        draw_ground_floor(screen, largura_casa, altura_casa)
-        draw_rooms(screen, ROOMS[1], MOVEIS)
-    elif floor == 'upper':
-        draw_upper_floor(screen, largura_casa, altura_casa)
-        draw_rooms(screen, ROOMS[2], MOVEIS)
+    if floor == 'laje':
+        draw_laje(screen, largura_casa, altura_casa)
+        draw_rooms(screen, ROOMS["Laje"], MOVEIS)
+    elif floor == 'terreo':
+        draw_terreo_floor(screen, largura_casa, altura_casa)
+        draw_rooms(screen, ROOMS["Terreo"], MOVEIS)
+    elif floor == 'pAndar':
+        draw_pAndar_floor(screen, largura_casa, altura_casa)
+        draw_rooms(screen, ROOMS["1 Andar"], MOVEIS)
 
 def coords(screen, width, height):
     x = (screen.get_width() - width) // 2
@@ -59,9 +61,12 @@ def set_escala(largura_tela, altura_tela, largura_casa, altura_casa):
     return escala * largura_casa, escala * altura_casa
 
 def encontrar_comodo(rooms, comodo_nome):
-    for floor in rooms:
-        for room in floor:
+    for floor_name, floor_rooms in rooms.items():  # Itera sobre os andares e seus cômodos
+        # print(f"Verificando andar: {floor_name}")
+        for room in floor_rooms:
+            # print("Verificando cômodo:", room[0])
             if room[0] == comodo_nome:
+                # print("Cômodo encontrado:", comodo_nome, room[1:])
                 return room[1:]  # Retorna x, y, largura, altura
     return None
 
@@ -98,18 +103,22 @@ def escolher_moveis(moveis, rooms, comodo, escala):
 def escolher_todos_moveis(rooms, moveis, escala):
     moveis_escolhidos = {}
     
-    # Percorre cada cômodo e seleciona 3 móveis aleatoriamente
-    for floor in rooms:
-        for room in floor:
-            comodo = room[0]  # Nome do cômodo
-            moveis_do_comodo = escolher_moveis(moveis, rooms, comodo, escala)  # Seleciona 3 móveis
+    # Percorre cada andar no dicionário de andares
+    for andar, lista_de_comodos in rooms.items():
+        # Percorre cada cômodo na lista do andar
+        for room in lista_de_comodos:
+            comodo, x, y, width, height = room  # Desestrutura o cômodo
+            
+            # Seleciona móveis para o cômodo
+            moveis_do_comodo = escolher_moveis(moveis, rooms, comodo, escala)
+            
             if moveis_do_comodo:
                 moveis_escolhidos[comodo] = moveis_do_comodo  # Associa os móveis ao cômodo
-
+    
     return moveis_escolhidos
 
 def posicao_valida(movel, moveis_existentes, medidas):
-    return True
+    # return True
     # Verifica se o móvel está dentro dos limites do cômodo
     if movel.x < medidas[0] or movel.y < medidas[1] or \
        movel.x + movel.largura > medidas[0] + medidas[2] or \
