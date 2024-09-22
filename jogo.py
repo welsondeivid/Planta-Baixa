@@ -5,30 +5,36 @@ import planta_baixa
 import pygame
 
 # Captura o input do usuário
-# dados = genetico.main()
-# for andar in dados.andares:
-#     print(andar.nome)
-    # for comodo in andar.comodos:
+dados = genetico.main()
+for andar in dados.andares:
+    print("#######################", andar.nome, "#######################")
+    for comodo in andar.comodos:
+        print(f'------{comodo.tipo}')
+        print(f'altura: {comodo.altura}, largura: {comodo.largura}')
+        print(f'iniciox: {comodo.iniciox}, inicioY: {comodo.inicioy} ')
+        print(f'portax: {comodo.portax}, portay: {comodo.portay}')
+        print(f'janelax: {comodo.janelax}, janelay: {comodo.janelay}')
+        print()
 
 # ROOMS = {
 #         "Terreo": [
-#             ["quarto", 100, 300, 4 * escala, 3 * escala],
-#             ["banheiro", 500, 800, 6 * escala, 1 * escala],
-#             ["ginastica", 800, 500, 4 * escala, 5 * escala]
+#             ["quarto", 100, 300, 4, 3],
+#             ["banheiro", 500, 800, 6, 1],
+#             ["ginastica", 800, 500, 4, 5]
 #         ],
 #         "1 Andar": [
-#             ["sala", 500, 300, 5 * escala, 6 * escala],
-#             ["cozinha", 900, 800, 4 * escala, 3 * escala],
-#             ["salaDeJantar", 100, 100, 4 * escala, 4 * escala]
+#             ["sala", 500, 300, 5, 6],
+#             ["cozinha", 900, 800, 4, 3],
+#             ["salaDeJantar", 100, 100, 4, 4]
 #         ],
 #         "Laje": [
-#             ["playroom", 100, 300, 6 * escala, 5 * escala],
-#             ["socialbath", 800, 300, 2 * escala, 4 * escala],
-#             ["areaServico", 500, 800, 2 * escala, 5 * escala]
+#             ["playroom", 100, 300, 6, 5],
+#             ["socialbath", 800, 300, 2, 4],
+#             ["areaServico", 500, 800, 2, 5]
 #         ]
 #     }
 
 # print(dados.andares[0].comodos[0].tipo)
 
-# menu.menu(pygame)
-# planta_baixa.planta(pygame)
+menu.menu(pygame)
+planta_baixa.planta(pygame, dados)

@@ -12,7 +12,7 @@ def draw_laje(screen, width, height):
     x, y = coords(screen, width, height)
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno do porão
 
-# Função para desenhar o térreo
+# Função para desenhar o Terreo
 def draw_terreo_floor(screen, width, height):
     x, y = coords(screen, width, height)
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno externo
@@ -24,8 +24,26 @@ def draw_pAndar_floor(screen, width, height):
 
 def draw_rooms(screen, rooms, moveis):
     for room in rooms:  # Itera sobre cada andar
-        comodo, x, y, width, height = room
-        pygame.draw.rect(screen, cor.GREEN, (x, y, width, height), LINE_WIDTH)
+        comodo, x, y, width, height, *rest = room
+        janela = None
+        porta = None
+        
+        # Se houver janelas e portas, atribua-as às variáveis
+        if len(rest) >= 2:
+            janela = rest[0]
+            porta = rest[1]
+            
+        # Desenha o cômodo
+        if comodo == "escada":
+            pygame.draw.rect(screen, cor.YELLOW, (x, y, width, height))
+        else:
+            pygame.draw.rect(screen, cor.GREEN, (x, y, width, height), LINE_WIDTH)
+        
+        # Desenha as janelas e portas, se existirem
+        if janela:
+            janela.draw(screen)
+        if porta:
+            porta.draw(screen)
 
         # Desenha os móveis do cômodo atual
         mv.draw_furnitures(screen, comodo, moveis)
@@ -46,8 +64,8 @@ def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, MOVEIS):
         draw_rooms(screen, ROOMS["1 Andar"], MOVEIS)
 
 def coords(screen, width, height):
-    x = (screen.get_width() - width) // 2
-    y = (screen.get_height() - height) // 2
+    x = round((screen.get_width() - width) // 2)
+    y = round((screen.get_height() - height) // 2)
     return x, y
 
 def get_escala(largura_casa, altura_casa):
@@ -107,7 +125,7 @@ def escolher_todos_moveis(rooms, moveis, escala):
     for andar, lista_de_comodos in rooms.items():
         # Percorre cada cômodo na lista do andar
         for room in lista_de_comodos:
-            comodo, x, y, width, height = room  # Desestrutura o cômodo
+            comodo = room[0]  # Desestrutura o cômodo
             
             # Seleciona móveis para o cômodo
             moveis_do_comodo = escolher_moveis(moveis, rooms, comodo, escala)
@@ -134,3 +152,32 @@ def posicao_valida(movel, moveis_existentes, medidas):
             return False
     
     return True
+
+def converter_para_pixels_e_limitar(x, y, largura, altura, escala, largura_planta, altura_planta):
+    """
+    Converte coordenadas baseadas em unidades para pixels e ajusta para que fiquem dentro dos limites da planta.
+    """
+    x_pixel = x * escala
+    y_pixel = y * escala
+    largura_pixel = largura * escala
+    altura_pixel = altura * escala
+        
+    # Ajustar x e largura
+    if x_pixel < 0:
+        x_pixel = 0
+        if largura_pixel > 0:
+            largura_pixel += x_pixel
+            if x_pixel + largura_pixel > largura_planta:
+                largura_pixel = largura_planta - x_pixel
+    
+    # Ajustar y e altura
+    if y_pixel < 0:
+        y_pixel = 0
+        if altura_pixel > 0:
+            altura_pixel += y_pixel
+            if y_pixel + altura_pixel > altura_planta:
+                altura_pixel = altura_planta - y_pixel
+    if largura_pixel > 0:
+        return x_pixel, y_pixel, largura_pixel, altura_pixel
+    else:
+        return x_pixel, y_pixel

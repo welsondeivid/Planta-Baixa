@@ -129,7 +129,7 @@ def calcRemaningSpace(andar, totalWidth, totalHeight):
 #Preenche todos os andares da casa com comodos
 def sorteiaComodos(casa):
 
-    #Comodos obrigatórios do térreo
+    #Comodos obrigatórios do Terreo
     RoomsT = ['sala', 'cozinha', 'escada', 'salaDeJantar']
     #Quartos que não foram adicionados no terreo
     remainingRooms = [x for x in list(simbols.keys()) if x not in RoomsT and x != 'corredor']
@@ -137,7 +137,7 @@ def sorteiaComodos(casa):
 
     shuffle(remainingRooms)
 
-    #Sorteia os valores do térreo
+    #Sorteia os valores do Terreo
     for roomName in RoomsT:
         width, height = drawRoomsSize(roomName, casa) 
         casa.andares[0].insertRoom(roomName, width, height)
@@ -500,7 +500,7 @@ def geraPopInicial():
         casa = Casa()
 
         #inicializa os andares
-        casa.andares = [Andar('Térreo'), Andar('1 Andar'), Andar('Laje')]
+        casa.andares = [Andar('Terreo'), Andar('1 Andar'), Andar('Laje')]
     
         #preenche os andares da casa com comodos aleatórios
         sorteiaComodos(casa)

@@ -1,10 +1,10 @@
 import pygame
 import random
-import sys
 
 pygame.init()
 
 LINE_WIDTH = 1
+LINE_WIDTH2 = 2
 
 def draw_furnitures(screen, comodo, moveis):
     if comodo in moveis:
@@ -43,3 +43,24 @@ class movel:
 
     def __repr__(self):
         return f"{self.nome}\nlargura: {self.largura}\naltura: {self.altura}\nX: {self.x}\nY: {self.y}"
+    
+
+class Porta:
+    def __init__(self, x, y, escala):
+        self.largura = 0.90 * escala
+        self.x = x 
+        self.y = y
+        self.cor = (0, 0, 0)
+
+    def draw(self, screen):
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2)
+
+class Janela:
+    def __init__(self, x, y, escala):
+        self.largura = 1.50 * escala
+        self.x = x
+        self.y = y 
+        self.cor = (0, 0, 0)
+
+    def draw(self, screen):
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2)
