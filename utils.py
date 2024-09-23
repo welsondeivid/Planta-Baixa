@@ -12,7 +12,7 @@ def draw_laje(screen, width, height):
     x, y = coords(screen, width, height)
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno do porão
 
-# Função para desenhar o Terreo
+# Função para desenhar o Térreo
 def draw_terreo_floor(screen, width, height):
     x, y = coords(screen, width, height)
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno externo
@@ -58,7 +58,7 @@ def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, MOVEIS):
         draw_rooms(screen, ROOMS["Laje"], MOVEIS)
     elif floor == 'terreo':
         draw_terreo_floor(screen, largura_casa, altura_casa)
-        draw_rooms(screen, ROOMS["Terreo"], MOVEIS)
+        draw_rooms(screen, ROOMS["Térreo"], MOVEIS)
     elif floor == 'pAndar':
         draw_pAndar_floor(screen, largura_casa, altura_casa)
         draw_rooms(screen, ROOMS["1 Andar"], MOVEIS)

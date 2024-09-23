@@ -20,7 +20,7 @@ def planta(pygame, dados):
     escala = ut.get_escala(largura_casa, altura_casa)
 
     planta = pygame.display.set_mode((largura_tela, altura_tela))
-    pygame.display.set_caption("Terreo")
+    pygame.display.set_caption("Térreo")
 
     # Reposiciona a janela (no Windows)
     x, y = 0, 0  # Posição desejada (x, y)
@@ -132,7 +132,7 @@ def planta(pygame, dados):
 
                 elif event.key == pygame.K_g:
                     current_floor = 'terreo'
-                    pygame.display.set_caption("Terreo")
+                    pygame.display.set_caption("Térreo")
                     
                 elif event.key == pygame.K_u:
                     current_floor = 'pAndar'

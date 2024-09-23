@@ -13,6 +13,7 @@ def menu(pygame):
     # Configura a janela
     largura, altura = 800, 600
     largura_casa, altura_casa = 0, 0
+    orientacao = ''
     menu = pygame.display.set_mode((largura, altura))
     pygame.display.set_caption("Captura de Input")
 
@@ -37,7 +38,7 @@ def menu(pygame):
     input_text = ''
     current_prompt = 'Digite a Largura:'
     prompt_index = 0
-    prompts = ['Digite a Largura:', 'Digite a Altura:']
+    prompts = ['Digite a Largura:', 'Digite a Altura:', 'Digite a Orientação:C, B, E, D']
     input_mode = True  # Alterna entre prompts e input
 
     # Loop principal
@@ -53,12 +54,15 @@ def menu(pygame):
                 elif event.key == pygame.K_RETURN:
                     if prompt_index == 0:
                         largura_casa = input_text
-                    else:
+                    elif prompt_index == 1:
                         altura_casa = input_text
+                    else:
+                        orientacao = input_text
                     # Muda para o próximo prompt quando ENTER é pressionado
                     if input_mode:
                         prompt_index += 1
                         if prompt_index < len(prompts):
+                            print(prompt_index, len(prompts))
                             current_prompt = prompts[prompt_index]
                             input_text = ''
                         else:
@@ -66,7 +70,7 @@ def menu(pygame):
                             with open('input_data.txt', 'w') as file:
                                 file.write(f'{largura_casa} {altura_casa}')
                             pygame.quit()
-                            return
+                            return orientacao
 
                     else:
                         input_mode = True
@@ -76,7 +80,7 @@ def menu(pygame):
                 elif event.key == pygame.K_SPACE:
                     # Adiciona um espaço ao texto
                     input_text += ' '
-                elif event.unicode.isdigit():
+                elif event.unicode.isdigit() and prompt_index < 2:
                     # Adiciona caracteres imprimíveis ao texto
                     input_text += event.unicode
 

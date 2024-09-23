@@ -27,7 +27,7 @@ simbols = dict(
 
 
 class Casa:
-    def __init__(self, width = 40, height = 5):
+    def __init__(self, width , height):
         #Armazena os andares
         self.andares = []
         self.width = width
@@ -35,10 +35,13 @@ class Casa:
         self.fitness = 0
         self.portax = ''
         self.portay = ''
+        self.usedSpace = 0
+        self.totalSpace = 0
 
     def printHouse(self):
         print(f"fitness: {self.fitness}")
-        print(f"porta de entrada: \n x: {self.portax}, y: {self.portay}")
+        # print(f"porta de entrada: \n x: {self.portax}, y: {self.portay}")
+       
         self.printFloors()
 
     def printFloors(self):
@@ -47,7 +50,7 @@ class Casa:
 
     def calcFitness(self):
         fitness = 0
-        spaceRemaining = 1
+        
         for i in range(len(self.andares)):
             for comodo in self.andares[i].comodos:
                 if i == 0: 
@@ -62,13 +65,18 @@ class Casa:
                     if comodo.tipo == 'areaServico':
                         fitness+= 10
 
-            
+        #Dá um bonus por uso de espaço
+        totalspace = self.width * self.height
+        usedSpace = 0
         for i in range(0,2):
-            spaceRemaining += calcRemaningSpace(self.andares[i], self.width, self.height)
+            usedSpace += totalspace - calcRemaningSpace(self.andares[i], self.width, self.height)
 
-        bonusSpaceUsed = 0 if spaceRemaining == 0 else 10 / spaceRemaining
+       
+        bonusSpaceUsed =  0.2 * usedSpace
         fitness += bonusSpaceUsed
         self.fitness = fitness
+        self.usedSpace = usedSpace
+        self.totalSpace = totalspace
 
         
 
@@ -103,33 +111,33 @@ class Comodo:
         self.tipo = tipo
         self.altura = altura
         self.largura = largura
-        self.iniciox, self.inicioy = '', ''
-        self.portax, self.portay = '', ''
-        self.janelax, self.janelay = '', ''
+        self.iniciox, self.inicioy = 0, 0
+        self.portax, self.portay = 0, 0
+        self.janelax, self.janelay = 0, 0
 
     def print(self):
         print(f'------{self.tipo}')
         print(f'altura: {self.altura}, largura: {self.largura}')
-        print(f'iniciox: {self.iniciox}, inicioY: {self.inicioy} ')
-        print(f'portax: {self.portax}, portay: {self.portay}')
-        print(f'janelax: {self.janelax}, janelay: {self.janelay}')
+        # print(f'iniciox: {self.iniciox}, inicioY: {self.inicioy} ')
+        # print(f'portax: {self.portax}, portay: {self.portay}')
+        # print(f'janelax: {self.janelax}, janelay: {self.janelay}')
 
 
 #Calcula quanto espaço da área total de uma andar foi ocupada por quartos
 def calcRemaningSpace(andar, totalWidth, totalHeight):
 
-    totalm2 = totalWidth * totalHeight
+    areaTotal = totalWidth * totalHeight
     for room in andar.comodos:
         roomm2 = room.altura * room.largura
-        totalm2 -= roomm2
+        areaTotal -= roomm2
 
-    return totalm2
+    return areaTotal
 
 
 #Preenche todos os andares da casa com comodos
 def sorteiaComodos(casa):
 
-    #Comodos obrigatórios do Terreo
+    #Comodos obrigatórios do térreo
     RoomsT = ['sala', 'cozinha', 'escada', 'salaDeJantar']
     #Quartos que não foram adicionados no terreo
     remainingRooms = [x for x in list(simbols.keys()) if x not in RoomsT and x != 'corredor']
@@ -137,7 +145,7 @@ def sorteiaComodos(casa):
 
     shuffle(remainingRooms)
 
-    #Sorteia os valores do Terreo
+    #Sorteia os valores do térreo
     for roomName in RoomsT:
         width, height = drawRoomsSize(roomName, casa) 
         casa.andares[0].insertRoom(roomName, width, height)
@@ -440,7 +448,7 @@ def addWindows(andar, planta, width, height):
             
 
 # Função para desenhar a casa no terminal
-def drawHouse(casa):
+def drawHouse(casa, direcao):
     # Obtém as dimensões da casa
     width = casa.width
     height = casa.height
@@ -453,9 +461,32 @@ def drawHouse(casa):
         for comodo in andar.comodos:
             # Encontra uma posição livre para o cômodo
             comodo.print()
-            for y in range(height - comodo.altura + 1):
-                for x in range(width - comodo.largura + 1):
-                    if all(planta[y+i][x+j] == ' ' for i in range(comodo.altura) for j in range(comodo.largura)):
+            
+            # Define a ordem de preenchimento com base na direção
+            if direcao == 'C':
+                x_range = range(width)
+                y_range = range(height)
+            elif direcao == 'D':
+                #se o sentido for para direira ele preenche da esquerda para direita 
+                x_range = range(width - 1, -1, -1)
+                y_range = range(height)
+            elif direcao == 'B':
+                #se o sentido for para baixo ele preenche do final da altura para o inicio 
+                x_range = range(width)
+                y_range = range(height - 1, -1, -1)
+            elif direcao == 'E':
+                #se o sentido for para esquerda e normal
+                x_range = range(width )
+                y_range = range(height )
+            else:
+                # Caso a direção não seja reconhecida, usa a ordem padrão
+                x_range = range(width)
+                y_range = range(height)
+
+            for y in y_range:
+                for x in x_range:
+                    if (x + comodo.largura <= width and y + comodo.altura <= height and
+                        all(planta[y+i][x+j] == ' ' for i in range(comodo.altura) for j in range(comodo.largura))):
                         # Preenche o espaço do cômodo na matriz
                         for i in range(comodo.altura):
                             for j in range(comodo.largura):
@@ -470,15 +501,11 @@ def drawHouse(casa):
                     continue
                 break
 
-
-        
         addCorridors(planta, width, height)
-        #TODO: implementar a dir
-        addFrontDoor(casa, planta, 'dir')
-        addInternalDoors(andar, planta, width, height, 'dir')
+        #addFrontDoor(casa, planta, direcao)
+        addInternalDoors(andar, planta, width, height, direcao)
         addWindows(andar, planta, width, height)
 
-        
         # Imprime a planta da casa
         # print("\nPlanta da Casa:")
         # print("+" + "-" * (width) + "+")
@@ -486,21 +513,19 @@ def drawHouse(casa):
         #     print("|" + "".join(linha) + "|")
         # print("+" + "-" * (width) + "+")
 
-        # Imprime a legenda
+        # # Imprime a legenda
         # print("\nLegenda:")
         # for tipo, info in simbols.items():
         #     print(f"{info.simbol}: {tipo}")
         
         planta = [[' ' for _ in range(width)] for _ in range(height)]
 
-
-def geraPopInicial():
-
+def geraPopInicial( width, height):
     for i in range(0, popSize):
-        casa = Casa()
+        casa = Casa(width, height)
 
         #inicializa os andares
-        casa.andares = [Andar('Terreo'), Andar('1 Andar'), Andar('Laje')]
+        casa.andares = [Andar('Térreo'), Andar('1 Andar'), Andar('Laje')]
     
         #preenche os andares da casa com comodos aleatórios
         sorteiaComodos(casa)
@@ -511,8 +536,8 @@ def geraPopInicial():
 def printPop(pop):
     for i in range(len(pop)):
         print('\n')
-        pop[i].printFloors()
-        print(f'\n{pop[i].fitness}')
+        # pop[i].printFloors()
+        # print(f'\n{pop[i].fitness}')
         
 
 def getFitness(casa):
@@ -592,10 +617,17 @@ def mutate(casa):
 
 pop = []
 popSize = 10
-geracoes = 1
+geracoes = 2
 # dir = 'N'
-def main():
-    geraPopInicial()
+def main(dir):
+    with open('input_data.txt', 'r') as file:
+        data = file.readline().strip()
+        width, height = map(int, data.split(' '))
+
+    # width = int(input("Digite a largura da casa: "))
+    # height = int(input("Digite a altura da casa: "))
+    # dir = input("Digite a direção da casa: ")
+    geraPopInicial(width, height)
     # printPop(pop)
     pop.sort(key = getFitness, reverse = True)
 
@@ -604,10 +636,11 @@ def main():
         # print("-------------------------------")
         selectParentes()
         pop.sort(key = getFitness, reverse = True)
+        # printPop(pop[i])
 
 
     # print(pop[0].fitness)
-    drawHouse(pop[0])
+    drawHouse(pop[0], dir)
 
     # pop[0].printHouse()
     return pop[0]

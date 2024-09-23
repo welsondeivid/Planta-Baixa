@@ -5,7 +5,9 @@ import planta_baixa
 import pygame
 
 # Captura o input do usuário
-dados = genetico.main()
+dir = menu.menu(pygame)
+
+dados = genetico.main(dir)
 for andar in dados.andares:
     print("#######################", andar.nome, "#######################")
     for comodo in andar.comodos:
@@ -17,7 +19,7 @@ for andar in dados.andares:
         print()
 
 # ROOMS = {
-#         "Terreo": [
+#         "Térreo": [
 #             ["quarto", 100, 300, 4, 3],
 #             ["banheiro", 500, 800, 6, 1],
 #             ["ginastica", 800, 500, 4, 5]
@@ -36,5 +38,4 @@ for andar in dados.andares:
 
 # print(dados.andares[0].comodos[0].tipo)
 
-menu.menu(pygame)
 planta_baixa.planta(pygame, dados)
