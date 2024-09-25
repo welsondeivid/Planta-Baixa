@@ -10,7 +10,9 @@ def planta(pygame, dados):
 
     with open('input_data.txt', 'r') as file:
         data = file.readline().strip()
-        largura_casa, altura_casa = map(int, data.split(' '))
+        parts = data.split(' ')
+        largura_casa = int(parts[0])
+        altura_casa = int(parts[1])
 
     # Configurando a janela
     info = pygame.display.Info()
@@ -54,10 +56,8 @@ def planta(pygame, dados):
             # Adicionar o cômodo à estrutura se não tiver janelas ou portas nulas
             if janela or porta:
                 ROOMS[andar_nome].append([tipo, x + translationX, y + translationY, largura, altura, janela, porta])
-                print(x + translationX, y + translationY)
             else:
                 ROOMS[andar_nome].append([tipo, x + translationX, y + translationY, largura, altura])
-                print(x + translationX, y + translationY)
 
     # for andar, comodos in ROOMS.items():
     #     print(f"#### {andar} ####")
@@ -126,7 +126,7 @@ def planta(pygame, dados):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_b:
+                if event.key == pygame.K_l:
                     current_floor = 'laje'
                     pygame.display.set_caption("Porão")
 

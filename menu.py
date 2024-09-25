@@ -13,7 +13,7 @@ def menu(pygame):
     # Configura a janela
     largura, altura = 800, 600
     largura_casa, altura_casa = 0, 0
-    orientacao = ''
+    letra_escolhida = ''
     menu = pygame.display.set_mode((largura, altura))
     pygame.display.set_caption("Captura de Input")
 
@@ -38,7 +38,7 @@ def menu(pygame):
     input_text = ''
     current_prompt = 'Digite a Largura:'
     prompt_index = 0
-    prompts = ['Digite a Largura:', 'Digite a Altura:', 'Digite a Orientação:C, B, E, D']
+    prompts = ['Digite a Largura:', 'Digite a Altura:', 'Digite uma letra (C, B, E, D):']
     input_mode = True  # Alterna entre prompts e input
 
     # Loop principal
@@ -56,22 +56,21 @@ def menu(pygame):
                         largura_casa = input_text
                     elif prompt_index == 1:
                         altura_casa = input_text
-                    else:
-                        orientacao = input_text
+                    elif prompt_index == 2:
+                        letra_escolhida = input_text.upper()  # Armazena a letra escolhida em maiúsculo
+                    
                     # Muda para o próximo prompt quando ENTER é pressionado
                     if input_mode:
                         prompt_index += 1
                         if prompt_index < len(prompts):
-                            print(prompt_index, len(prompts))
                             current_prompt = prompts[prompt_index]
                             input_text = ''
                         else:
                             input_mode = False
                             with open('input_data.txt', 'w') as file:
-                                file.write(f'{largura_casa} {altura_casa}')
+                                file.write(f'{largura_casa} {altura_casa} {letra_escolhida}')
                             pygame.quit()
-                            return orientacao
-
+                            return
                     else:
                         input_mode = True
                 elif event.key == pygame.K_BACKSPACE:
@@ -80,8 +79,12 @@ def menu(pygame):
                 elif event.key == pygame.K_SPACE:
                     # Adiciona um espaço ao texto
                     input_text += ' '
-                elif event.unicode.isdigit() and prompt_index < 2:
-                    # Adiciona caracteres imprimíveis ao texto
+                elif prompt_index == 2:  # Limite de input para o terceiro prompt (letras)
+                    # Apenas aceita as letras 'A', 'B', 'C', 'D'
+                    if event.unicode.upper() in ['C', 'B', 'E', 'D']:
+                        input_text = event.unicode.upper()  # Força o caractere para maiúsculo
+                elif event.unicode.isdigit():
+                    # Adiciona caracteres numéricos imprimíveis ao texto
                     input_text += event.unicode
 
         menu.fill(WHITE)  # Preenche o fundo com branco
