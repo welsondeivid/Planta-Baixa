@@ -38,26 +38,48 @@ def planta(pygame, dados):
         ROOMS[andar_nome] = []
         
         for comodo in andar.comodos:
-            tipo = comodo.tipo
-            x, y, largura, altura = ut.converter_para_pixels_e_limitar(
-                comodo.iniciox, comodo.inicioy, comodo.largura, comodo.altura, escala, largura_casa, altura_casa
-            )
-            
+
             janela = None
             porta = None
             translationX, translationY = ut.coords(planta, largura_casa, altura_casa)
             
             if comodo.janelax is not None and comodo.janelax != "":
-                janela = moveis.Janela(x = translationX + (comodo.janelax * escala), y = translationY + (comodo.janelay * escala), escala=escala)
-            
+                print("JANELA")
+                print(comodo.janelax, comodo.iniciox, comodo.iniciox + comodo.largura)
+                print(comodo.janelay, comodo.inicioy, comodo.inicioy + comodo.altura)
+
+                if (comodo.janelay == comodo.inicioy or comodo.janelay == comodo.inicioy + comodo.altura) and (comodo.iniciox <= comodo.janelax <= comodo.iniciox + comodo.largura):
+                    print("HORIZONTAL")
+                    janela = moveis.Janela(x = translationX + (comodo.janelax * escala), y = translationY + (comodo.janelay * escala), escala=escala, orientacao="H")
+
+                elif (comodo.janelax == comodo.iniciox or comodo.janelax == comodo.iniciox + comodo.largura) and (comodo.inicioy <= comodo.janelay <= comodo.inicioy + comodo.altura):
+                    print("VERTICAL")
+                    janela = moveis.Janela(y = translationY + (comodo.janelay * escala), x = translationX + (comodo.janelax * escala), escala=escala, orientacao="V")
+
             if comodo.portax is not None and comodo.portax != "":
-                porta = moveis.Porta(x= translationX + (comodo.portax) * escala, y = translationY + (comodo.portay * escala), escala=escala)
+                print("PORTA")
+                print(comodo.portax, comodo.iniciox, comodo.iniciox + comodo.largura)
+                print(comodo.portay, comodo.inicioy, comodo.inicioy + comodo.altura)
+                
+                if (comodo.portay == comodo.inicioy or comodo.portay == comodo.inicioy + comodo.altura) and (comodo.iniciox <= comodo.portax <= comodo.iniciox + comodo.largura):
+                    print("HORIZONTAL")
+                    porta = moveis.Porta(x= translationX + (comodo.portax) * escala, y = translationY + (comodo.portay * escala), escala=escala,orientacao="H")
+
+                elif (comodo.portax == comodo.iniciox or comodo.portax == comodo.iniciox + comodo.largura) and (comodo.inicioy <= comodo.portay <= comodo.inicioy + comodo.altura):
+                    print("VERTICAL")
+                    porta = moveis.Porta(y = translationY + (comodo.portay * escala), x= translationX + (comodo.portax) * escala, escala=escala, orientacao="V")
+
+            tipo = comodo.tipo
+            x, y, largura, altura = ut.converter_para_pixels_e_limitar(
+                comodo.iniciox, comodo.inicioy, comodo.largura, comodo.altura, escala, largura_casa, altura_casa
+            )
             
             # Adicionar o cômodo à estrutura se não tiver janelas ou portas nulas
             if janela or porta:
                 ROOMS[andar_nome].append([tipo, x + translationX, y + translationY, largura, altura, janela, porta])
             else:
                 ROOMS[andar_nome].append([tipo, x + translationX, y + translationY, largura, altura])
+
 
     # for andar, comodos in ROOMS.items():
     #     print(f"#### {andar} ####")
@@ -67,50 +89,50 @@ def planta(pygame, dados):
     MOVEIS = {
     "sala": [
         moveis.movel("Sofá de 2 lugares", 0.82, 1.72, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "sala")),
-        moveis.movel("Sofá de 3 lugares", 0.82, 2.10, cor.SANDY_BROWN, escala, ut.encontrar_comodo(ROOMS, "sala")),
-        moveis.movel("Poltrona", 0.70, 0.80, cor.DARK_BLUE, escala, ut.encontrar_comodo(ROOMS, "sala")),
-        moveis.movel("Mesa de centro", 1.00, 0.60, cor.DEEP_SKY_BLUE, escala, ut.encontrar_comodo(ROOMS, "sala")),
-        moveis.movel("Mesa auxiliar", 0.43, 0.40, cor.DARK_GRAY, escala, ut.encontrar_comodo(ROOMS, "sala"))
+        moveis.movel("Sofá de 3 lugares", 0.82, 2.10, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "sala")),
+        moveis.movel("Poltrona", 0.70, 0.80, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "sala")),
+        moveis.movel("Mesa de centro", 1.00, 0.60, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "sala")),
+        moveis.movel("Mesa auxiliar", 0.43, 0.40, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "sala"))
     ],
     "salaDeJantar": [
         moveis.movel("Mesa de 4 lugares", 0.90, 0.90, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "salaDeJantar")),
-        moveis.movel("Mesa de 6 lugares", 1.60, 0.90, cor.SANDY_BROWN, escala, ut.encontrar_comodo(ROOMS, "salaDeJantar")),
-        moveis.movel("Aparador", 0.90, 0.36, cor.DARK_BLUE, escala, ut.encontrar_comodo(ROOMS, "salaDeJantar")),
-        moveis.movel("Cristaleira", 0.34, 0.84, cor.DEEP_SKY_BLUE, escala, ut.encontrar_comodo(ROOMS, "salaDeJantar"))
+        moveis.movel("Mesa de 6 lugares", 1.60, 0.90, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "salaDeJantar")),
+        moveis.movel("Aparador", 0.90, 0.36, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "salaDeJantar")),
+        moveis.movel("Cristaleira", 0.34, 0.84, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "salaDeJantar"))
     ],
     "quarto": [
         moveis.movel("Cama de casal", 1.44, 1.93, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "quarto")),
-        moveis.movel("Cama de solteiro", 0.94, 1.93, cor.SANDY_BROWN, escala, ut.encontrar_comodo(ROOMS, "quarto")),
-        moveis.movel("Mesa auxiliar", 0.43, 0.40, cor.DARK_BLUE, escala, ut.encontrar_comodo(ROOMS, "quarto")),
-        moveis.movel("Guarda-roupa com duas portas", 0.40, 1.00, cor.DEEP_SKY_BLUE, escala, ut.encontrar_comodo(ROOMS, "quarto")),
-        moveis.movel("Guarda-roupa com três portas", 0.40, 1.70, cor.DARK_GRAY, escala, ut.encontrar_comodo(ROOMS, "quarto")),
-        moveis.movel("Gaveteiro", 0.40, 0.87, cor.LIGHT_GRAY, escala, ut.encontrar_comodo(ROOMS, "quarto"))
+        moveis.movel("Cama de solteiro", 0.94, 1.93, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "quarto")),
+        moveis.movel("Mesa auxiliar", 0.43, 0.40, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "quarto")),
+        moveis.movel("Guarda-roupa com duas portas", 0.40, 1.00, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "quarto")),
+        moveis.movel("Guarda-roupa com três portas", 0.40, 1.70, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "quarto")),
+        moveis.movel("Gaveteiro", 0.40, 0.87, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "quarto"))
     ],
     "cozinha": [
         moveis.movel("Fogão de 4 bocas", 0.58, 0.68, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "cozinha")),
-        moveis.movel("Fogão de 5 bocas", 0.77, 0.68, cor.SANDY_BROWN, escala, ut.encontrar_comodo(ROOMS, "cozinha")),
-        moveis.movel("Geladeira com 1 porta", 0.62, 0.75, cor.DARK_BLUE, escala, ut.encontrar_comodo(ROOMS, "cozinha")),
-        moveis.movel("Geladeira com 2 portas", 0.83, 0.79, cor.DEEP_SKY_BLUE, escala, ut.encontrar_comodo(ROOMS, "cozinha")),
-        moveis.movel("Armário", 0.34, 1.68, cor.DARK_GRAY, escala, ut.encontrar_comodo(ROOMS, "cozinha")),
-        moveis.movel("Pia", 1.00, 0.50, cor.LIGHT_GRAY, escala, ut.encontrar_comodo(ROOMS, "cozinha"))
+        moveis.movel("Fogão de 5 bocas", 0.77, 0.68, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "cozinha")),
+        moveis.movel("Geladeira com 1 porta", 0.62, 0.75, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "cozinha")),
+        moveis.movel("Geladeira com 2 portas", 0.83, 0.79, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "cozinha")),
+        moveis.movel("Armário", 0.34, 1.68, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "cozinha")),
+        moveis.movel("Pia", 1.00, 0.50, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "cozinha"))
     ],
     "banheiro": [
         moveis.movel("Vaso sanitário", 0.37, 0.64, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro")),
-        moveis.movel("Banheira", 0.71, 1.65, cor.SANDY_BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro")),
-        moveis.movel("Pia com armário", 0.70, 0.45, cor.DARK_BLUE, escala, ut.encontrar_comodo(ROOMS, "banheiro")),
-        # moveis.movel("Box de banheiro", 1.50, 2.00, cor.DEEP_SKY_BLUE, escala, ut.encontrar_comodo(ROOMS, "banheiro"))
+        moveis.movel("Banheira", 0.71, 1.65, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro")),
+        moveis.movel("Pia com armário", 0.70, 0.45, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro")),
+        # moveis.movel("Box de banheiro", 1.50, 2.00, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro"))
     ],
     "areaServico": [
-        moveis.movel("Máquina de lavar roupa", 0.60, 0.65, cor.WHITE, escala, ut.encontrar_comodo(ROOMS, "areaServico")),
-        moveis.movel("Secadora", 0.60, 0.65, cor.GRAY, escala, ut.encontrar_comodo(ROOMS, "areaServico")),
-        moveis.movel("Tanque de lavar", 0.55, 0.50, cor.LIGHT_SKY_BLUE, escala, ut.encontrar_comodo(ROOMS, "areaServico")),
+        moveis.movel("Máquina de lavar roupa", 0.60, 0.65, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "areaServico")),
+        moveis.movel("Secadora", 0.60, 0.65, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "areaServico")),
+        moveis.movel("Tanque de lavar", 0.55, 0.50, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "areaServico")),
         moveis.movel("Cesto de roupa suja", 0.50, 0.40, cor.BEIGE, escala, ut.encontrar_comodo(ROOMS, "areaServico"))
     ],
     "ginastica": [
-        moveis.movel("Esteira", 1.50, 0.70, cor.DEEP_SKY_BLUE, escala, ut.encontrar_comodo(ROOMS, "ginastica")),
-        moveis.movel("Bicicleta ergométrica", 1.20, 0.50, cor.GRAY, escala, ut.encontrar_comodo(ROOMS, "ginastica")),
-        moveis.movel("Banco de supino", 1.80, 0.60, cor.DARK_GRAY, escala, ut.encontrar_comodo(ROOMS, "ginastica")),
-        moveis.movel("Halteres", 0.50, 0.30, cor.SILVER, escala, ut.encontrar_comodo(ROOMS, "ginastica"))
+        moveis.movel("Esteira", 1.50, 0.70, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "ginastica")),
+        moveis.movel("Bicicleta ergométrica", 1.20, 0.50, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "ginastica")),
+        moveis.movel("Banco de supino", 1.80, 0.60, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "ginastica")),
+        moveis.movel("Halteres", 0.50, 0.30, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "ginastica"))
     ]
 }
     # Seleciona móveis para a sala de estar (sala)

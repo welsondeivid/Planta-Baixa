@@ -46,21 +46,37 @@ class movel:
     
 
 class Porta:
-    def __init__(self, x, y, escala):
-        self.largura = 0.90 * escala
+    def __init__(self, x, y, escala, orientacao):
+        if (orientacao == "H"):
+            self.largura = 0.90 * escala
+            self.altura = None
+        else:
+            self.altura = 0.90 * escala
+            self.largura = None
         self.x = x 
         self.y = y
-        self.cor = (0, 0, 0)
+        self.cor = (0, 0, 255)
 
-    def draw(self, screen):
+    def drawH(self, screen):
         pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2)
+
+    def drawV(self, screen):
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2)
 
 class Janela:
-    def __init__(self, x, y, escala):
-        self.largura = 1.50 * escala
+    def __init__(self, x, y, escala, orientacao):
+        if (orientacao == "H"):
+            self.largura = 1.50 * escala
+            self.altura = None
+        else:
+            self.altura = 1.50 * escala
+            self.largura = None
         self.x = x
         self.y = y 
-        self.cor = (0, 0, 0)
+        self.cor = (0, 0, 255)
 
-    def draw(self, screen):
+    def drawH(self, screen):
         pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2)
+
+    def drawV(self, screen):
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2)

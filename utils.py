@@ -41,9 +41,15 @@ def draw_rooms(screen, rooms, moveis):
         
         # Desenha as janelas e portas, se existirem
         if janela:
-            janela.draw(screen)
+            if janela.largura:
+                janela.drawH(screen)
+            elif janela.altura:
+                janela.drawV(screen)
         if porta:
-            porta.draw(screen)
+            if porta.largura:
+                porta.drawH(screen)
+            elif porta.altura:
+                porta.drawV(screen)
 
         # Desenha os móveis do cômodo atual
         mv.draw_furnitures(screen, comodo, moveis)

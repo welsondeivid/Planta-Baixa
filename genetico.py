@@ -84,9 +84,6 @@ class Casa:
         for i in range(len(self.andares)):
             self.andares[i].createMap(self.width, self.height)
 
-    
-        
-
 class Andar:
     def __init__(self, nome):
         #nome do andar 
@@ -609,19 +606,18 @@ pop = []
 popSize = 10
 geracoes = 2
 # dir = 'N'
-def main(dir):
+
+def main():
+     
     with open('input_data.txt', 'r') as file:
         data = file.readline().strip()
-       
+        
         parts = data.split(' ')
         
         width = int(parts[0])
         height = int(parts[1])
         letter = parts[2]
 
-    # width = int(input("Digite a largura da casa: "))
-    # height = int(input("Digite a altura da casa: "))
-    # dir = input("Digite a direção da casa: ")
     geraPopInicial(width, height)
     # printPop(pop)
     pop.sort(key = getFitness, reverse = True)
@@ -640,8 +636,6 @@ def main(dir):
 
     # pop[0].printHouse()
     return pop[0]
-
-
 
 if __name__ == "__main__":
     main()
