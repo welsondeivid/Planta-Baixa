@@ -84,6 +84,9 @@ class Casa:
         for i in range(len(self.andares)):
             self.andares[i].createMap(self.width, self.height)
 
+    
+        
+
 class Andar:
     def __init__(self, nome):
         #nome do andar 
@@ -121,7 +124,6 @@ class Comodo:
 
     #coordenadas de inicio/fim do comodo
     def getCoordinates(self):
-        print(type(self), type(self.largura), type(self.altura))
         fx = self.largura + self.iniciox - 1
         fy = self.altura + self.inicioy - 1
 
@@ -259,11 +261,10 @@ def addInternalDoors(andar, planta, width, height, dir):
     comodos = andar.comodos
 
     for comodo in comodos:
-
+        print(comodo.tipo, comodo.altura, comodo.largura, comodo.iniciox, comodo.inicioy)
         if comodo.tipo == 'escada':
             continue
-        
-        print(comodo.tipo)
+
         ix, iy, fx, fy = comodo.getCoordinates()
         sides = checkInternalWalls(comodo, width, height)
 
@@ -447,28 +448,27 @@ def drawHouse(casa, direcao):
             
             # Define a ordem de preenchimento com base na direção
             if direcao == 'C':
-                x_range = range(width)
-                y_range = range(height)
+                x_range = range(1, width - 1)
+                y_range = range(1, height - 1)
             elif direcao == 'D':
-                #se o sentido for para direira ele preenche da esquerda para direita 
-                x_range = range(width - 1, -1, -1)
-                y_range = range(height)
+                x_range = range(width - 2, 0, -1)
+                y_range = range(1, height - 1)
             elif direcao == 'B':
-                #se o sentido for para baixo ele preenche do final da altura para o inicio 
-                x_range = range(width)
-                y_range = range(height - 1, -1, -1)
+                x_range = range(1, width - 1)
+                y_range = range(height - 2, 0, -1)
             elif direcao == 'E':
-                #se o sentido for para esquerda e normal
-                x_range = range(width )
-                y_range = range(height )
+                x_range = range(1, width - 1)
+                y_range = range(1, height - 1)
             else:
-                # Caso a direção não seja reconhecida, usa a ordem padrão
-                x_range = range(width)
-                y_range = range(height)
+                x_range = range(1, width - 1)
+                y_range = range(1, height - 1)
 
             for y in y_range:
                 for x in x_range:
-                    if (x + comodo.largura <= width and y + comodo.altura <= height and
+                    if comodo.tipo == "salaDeJantar":
+                        print(x + comodo.largura <= width - 1, y + comodo.altura <= height - 1, 
+                              all(planta[y+i][x+j] == ' ' for i in range(comodo.altura) for j in range(comodo.largura)))
+                    if (x + comodo.largura <= width - 1 and y + comodo.altura <= height - 1 and
                         all(planta[y+i][x+j] == ' ' for i in range(comodo.altura) for j in range(comodo.largura))):
                         # Preenche o espaço do cômodo na matriz
                         for i in range(comodo.altura):
@@ -484,7 +484,7 @@ def drawHouse(casa, direcao):
                     continue
                 break
             
-            #Adiciona a porta da frente
+            # Adiciona a porta da frente
             if comodo.tipo == 'sala':
                 addExternalSimbol(comodo, planta, direcao, 'P')
 
@@ -606,7 +606,6 @@ pop = []
 popSize = 10
 geracoes = 2
 # dir = 'N'
-
 def main():
      
     with open('input_data.txt', 'r') as file:
@@ -636,6 +635,7 @@ def main():
 
     # pop[0].printHouse()
     return pop[0]
+    
 
 if __name__ == "__main__":
     main()
