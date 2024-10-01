@@ -4,8 +4,21 @@ import colors as cor
 import random
 
 AREA_MAX_PIXEL = 1920 * 1080
-PIXEL_METRO = 110
+PIXEL_METRO = 100
 LINE_WIDTH = 1
+
+comodos_cores = {
+    'sala': cor.DARK_GRAY,
+    'cozinha': cor.SILVER,
+    'banheiro': cor.AQUA,
+    'corredor': cor.LIGHT_GRAY,
+    'escada': cor.SANDY_BROWN,
+    'salaDeJantar': cor.TOMATO,
+    'areaServico': cor.GOLD,
+    'closet': cor.PURPLE,
+    'quarto': cor.OLIVE,
+    'ginastica': cor.CHOCOLATE,
+}
 
 # Função para desenhar o porão
 def draw_laje(screen, width, height):
@@ -22,7 +35,7 @@ def draw_pAndar_floor(screen, width, height):
     x, y = coords(screen, width, height)
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno do andar superior
 
-def draw_rooms(screen, rooms, moveis):
+def draw_rooms(screen, rooms, moveis, moveis_usados):
     for room in rooms:  # Itera sobre cada andar
         comodo, x, y, width, height, *rest = room
         janela = None
@@ -34,10 +47,7 @@ def draw_rooms(screen, rooms, moveis):
             porta = rest[1]
             
         # Desenha o cômodo
-        if comodo == "escada":
-            pygame.draw.rect(screen, cor.YELLOW, (x, y, width, height))
-        else:
-            pygame.draw.rect(screen, cor.GREEN, (x, y, width, height), LINE_WIDTH)
+        pygame.draw.rect(screen, comodos_cores[comodo], (x, y, width, height))
         
         # Desenha as janelas e portas, se existirem
         if janela:
@@ -50,24 +60,22 @@ def draw_rooms(screen, rooms, moveis):
                 porta.drawH(screen)
             elif porta.altura:
                 porta.drawV(screen)
-
         # Desenha os móveis do cômodo atual
-        mv.draw_furnitures(screen, comodo, moveis)
-
+        mv.draw_furnitures(screen, comodo, moveis, moveis_usados)
 
 # Função para desenhar a planta baixa do andar selecionado
-def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, MOVEIS):
+def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, MOVEIS, moveis_usados):
     screen.fill(cor.WHITE)
 
     if floor == 'laje':
         draw_laje(screen, largura_casa, altura_casa)
-        draw_rooms(screen, ROOMS["Laje"], MOVEIS)
+        draw_rooms(screen, ROOMS["Laje"], MOVEIS,moveis_usados)
     elif floor == 'terreo':
         draw_terreo_floor(screen, largura_casa, altura_casa)
-        draw_rooms(screen, ROOMS["Térreo"], MOVEIS)
+        draw_rooms(screen, ROOMS["Térreo"], MOVEIS, moveis_usados)
     elif floor == 'pAndar':
         draw_pAndar_floor(screen, largura_casa, altura_casa)
-        draw_rooms(screen, ROOMS["1 Andar"], MOVEIS)
+        draw_rooms(screen, ROOMS["1 Andar"], MOVEIS, moveis_usados)
 
 def coords(screen, width, height):
     x = round((screen.get_width() - width) // 2)
@@ -106,7 +114,6 @@ def escolher_moveis(moveis, rooms, comodo, escala):
             while not posicao_valida_flag:
                 # Cria uma nova instância do móvel com posição aleatória
                 novo_movel = mv.movel(movel.nome, movel.largura/escala, movel.altura/escala, movel.cor, escala, medidas)
-                
                 # Verifica se a posição é válida
                 if not posicao_valida(novo_movel, moveis_selecionados, medidas):
                     # Tenta rotacionar o móvel (troca largura e altura)
@@ -126,18 +133,19 @@ def escolher_moveis(moveis, rooms, comodo, escala):
 
 def escolher_todos_moveis(rooms, moveis, escala):
     moveis_escolhidos = {}
-    
+    cont = 1
+
     # Percorre cada andar no dicionário de andares
     for andar, lista_de_comodos in rooms.items():
         # Percorre cada cômodo na lista do andar
         for room in lista_de_comodos:
             comodo = room[0]  # Desestrutura o cômodo
-            
             # Seleciona móveis para o cômodo
             moveis_do_comodo = escolher_moveis(moveis, rooms, comodo, escala)
-            
             if moveis_do_comodo:
+                comodo = f'{comodo}{cont}'
                 moveis_escolhidos[comodo] = moveis_do_comodo  # Associa os móveis ao cômodo
+            cont +=1
     
     return moveis_escolhidos
 

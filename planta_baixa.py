@@ -44,29 +44,19 @@ def planta(pygame, dados):
             translationX, translationY = ut.coords(planta, largura_casa, altura_casa)
             
             if comodo.janelax is not None and comodo.janelax != "":
-                print("JANELA")
-                print(comodo.janelax, comodo.iniciox, comodo.iniciox + comodo.largura)
-                print(comodo.janelay, comodo.inicioy, comodo.inicioy + comodo.altura)
 
                 if (comodo.janelay == comodo.inicioy or comodo.janelay == comodo.inicioy + comodo.altura) and (comodo.iniciox <= comodo.janelax <= comodo.iniciox + comodo.largura):
-                    print("HORIZONTAL")
                     janela = moveis.Janela(x = translationX + (comodo.janelax * escala), y = translationY + (comodo.janelay * escala), escala=escala, orientacao="H")
 
                 elif (comodo.janelax == comodo.iniciox or comodo.janelax == comodo.iniciox + comodo.largura) and (comodo.inicioy <= comodo.janelay <= comodo.inicioy + comodo.altura):
-                    print("VERTICAL")
                     janela = moveis.Janela(y = translationY + (comodo.janelay * escala), x = translationX + (comodo.janelax * escala), escala=escala, orientacao="V")
 
             if comodo.portax is not None and comodo.portax != "":
-                print("PORTA")
-                print(comodo.portax, comodo.iniciox, comodo.iniciox + comodo.largura)
-                print(comodo.portay, comodo.inicioy, comodo.inicioy + comodo.altura)
                 
                 if (comodo.portay == comodo.inicioy or comodo.portay == comodo.inicioy + comodo.altura) and (comodo.iniciox <= comodo.portax <= comodo.iniciox + comodo.largura):
-                    print("HORIZONTAL")
                     porta = moveis.Porta(x= translationX + (comodo.portax) * escala, y = translationY + (comodo.portay * escala), escala=escala,orientacao="H")
 
                 elif (comodo.portax == comodo.iniciox or comodo.portax == comodo.iniciox + comodo.largura) and (comodo.inicioy <= comodo.portay <= comodo.inicioy + comodo.altura):
-                    print("VERTICAL")
                     porta = moveis.Porta(y = translationY + (comodo.portay * escala), x= translationX + (comodo.portax) * escala, escala=escala, orientacao="V")
 
             tipo = comodo.tipo
@@ -126,7 +116,7 @@ def planta(pygame, dados):
         moveis.movel("Máquina de lavar roupa", 0.60, 0.65, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "areaServico")),
         moveis.movel("Secadora", 0.60, 0.65, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "areaServico")),
         moveis.movel("Tanque de lavar", 0.55, 0.50, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "areaServico")),
-        moveis.movel("Cesto de roupa suja", 0.50, 0.40, cor.BEIGE, escala, ut.encontrar_comodo(ROOMS, "areaServico"))
+        moveis.movel("Cesto de roupa suja", 0.50, 0.40, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "areaServico"))
     ],
     "ginastica": [
         moveis.movel("Esteira", 1.50, 0.70, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "ginastica")),
@@ -137,8 +127,8 @@ def planta(pygame, dados):
 }
     # Seleciona móveis para a sala de estar (sala)
     MOVEIS_ESCOLHIDOS = ut.escolher_todos_moveis(ROOMS, MOVEIS, escala)
-    # print(MOVEIS_ESCOLHIDOS)
-
+    moveis_usados = {chave: False for chave in MOVEIS_ESCOLHIDOS}
+    print(moveis_usados)
     ####ESCOLHER AQUI PARA COMODO EM MOVEIS#####
 
     # Loop principal
@@ -163,6 +153,6 @@ def planta(pygame, dados):
                 elif event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-                            
-        ut.draw_floor_plan(planta, current_floor, largura_casa, altura_casa, ROOMS, MOVEIS_ESCOLHIDOS)
+
+        ut.draw_floor_plan(planta, current_floor, largura_casa, altura_casa, ROOMS, MOVEIS_ESCOLHIDOS, moveis_usados)
         pygame.display.flip()  # Atualizando a tela

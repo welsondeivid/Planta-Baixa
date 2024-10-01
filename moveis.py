@@ -6,14 +6,23 @@ pygame.init()
 LINE_WIDTH = 1
 LINE_WIDTH2 = 2
 
-def draw_furnitures(screen, comodo, moveis):
-    if comodo in moveis:
-        # Seleciona 3 móveis aleatoriamente do cômodo
-        moveis_selecionados = moveis[comodo]
 
-        for movel in moveis_selecionados:
-            # Desenha cada móvel na tela
-            pygame.draw.rect(screen, movel.cor, (movel.x, movel.y, movel.largura, movel.altura))
+def draw_furnitures(screen, comodo, moveis, moveis_usados):
+
+    for chave in moveis:
+        if chave.startswith(comodo) or not moveis_usados[chave]:
+            print(chave.startswith(comodo), not moveis_usados[chave])
+        # Verifica se o nome do cômodo é o início da chave (comodo1, quarto2, etc.)
+        if chave.startswith(comodo) and not moveis_usados[chave]:
+            print("ENTROU", moveis[chave])
+        # Seleciona 3 móveis aleatoriamente do cômodo
+            moveis_selecionados = moveis[chave]
+            moveis_usados[chave] = True
+
+            print(moveis_selecionados)
+            for movel in moveis_selecionados:
+                # Desenha cada móvel na tela
+                pygame.draw.rect(screen, movel.cor, (movel.x, movel.y, movel.largura, movel.altura))
 
 class movel:
     def __init__(self, nome, largura, altura, cor, escala, medidas):
