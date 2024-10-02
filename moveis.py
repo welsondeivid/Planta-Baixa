@@ -4,16 +4,25 @@ import random
 pygame.init()
 
 LINE_WIDTH = 1
-LINE_WIDTH2 = 2
+LINE_WIDTH2 = 5
 
-def draw_furnitures(screen, comodo, moveis):
-    if comodo in moveis:
-        # Seleciona 3 móveis aleatoriamente do cômodo
-        moveis_selecionados = moveis[comodo]
+def draw_furnitures(screen, comodo, andar, moveis_escolhidos):
+    # Percorre a lista de móveis escolhidos, independentemente do nome do cômodo
+    for comodo_movel in moveis_escolhidos:
+        comodo_id = comodo_movel[0]  # ID do cômodo
+          # Lista de móveis para esse cômodo
 
-        for movel in moveis_selecionados:
-            # Desenha cada móvel na tela
-            pygame.draw.rect(screen, movel.cor, (movel.x, movel.y, movel.largura, movel.altura))
+        # print("comodo: ", comodo, "ANDAR: ", andar, "MOVEIS", comodo_movel)
+        # print(comodo_movel[0].split('_'))
+
+        # Para cada móvel na lista de móveis selecionados, desenha o móvel na tela
+        check = comodo_id.split('_')
+        if check[0] == andar and check[1] == comodo:
+            moveis_selecionados = comodo_movel[1]
+            print(comodo_id)
+            for movel in moveis_selecionados:
+                # Desenha o móvel na tela usando pygame
+                pygame.draw.rect(screen, movel.cor, (movel.x, movel.y, movel.largura, movel.altura))
 
 class movel:
     def __init__(self, nome, largura, altura, cor, escala, medidas):
@@ -37,12 +46,11 @@ class movel:
     
     def cabe(self, medidas):
         # Verifica se o móvel cabe no cômodo
-        # print(medidas)
         return self.largura <= medidas[2] and self.altura <= medidas[3]
     
 
     def __repr__(self):
-        return f"{self.nome}\nlargura: {self.largura}\naltura: {self.altura}\nX: {self.x}\nY: {self.y}"
+        return f"{self.nome}\nlargura: {self.largura}\naltura: {self.altura}\nX: {self.x}\nY: {self.y}\ncor: {self.cor}"
     
 
 class Porta:
