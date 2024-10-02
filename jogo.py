@@ -10,6 +10,7 @@ menu.menu(pygame)
 dados = genetico.main()
 for andar in dados.andares:
     print("#######################", andar.nome, "#######################")
+    print(andar.corridors)
     for comodo in andar.comodos:
         print(f'------{comodo.tipo}')
         print(f'altura: {comodo.altura}, largura: {comodo.largura}')

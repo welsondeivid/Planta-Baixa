@@ -450,68 +450,7 @@ def addDoorCorridorRandom(comodo, corridors, planta, dir):
                     return
 
 
-def conectaCorredores(planta, corridors, pInicio, pFim):
-    xi, yi = pInicio
-    xf, yf = pFim
 
-    # print(f'inicio: {pInicio}')
-    # print(f'fim: {pFim}')
-
-    #Define as prioridades de movimetno
-    prior = ['', '', '', '']
-    if xf > xi:
-        prior[0] = 'D'
-        prior[3] = 'E'
-    else:
-        prior[0] = 'E'
-        prior[3] = 'D'
-
-    if yf > yi:
-        prior[1] = 'B'
-        prior[2] = 'C'
-    else: 
-        prior[1] = 'C'
-        prior[2] = 'B'
-
-    print(f'prior: {prior}')
-
-    for i in range(0,4):
-        
-        for p in prior:
-            match p:
-                case 'E':
-                    # print(f'CAIU EM {p}')
-                    if planta[yi][xi - 1] == ' ':
-                        # print("ENTROU")
-                        addCorridor(planta, corridors, xi - 1, yi)
-                        xi = xi - 1
-                        break
-
-                case 'D':
-                    # print(f'CAIU EM {p}')
-                    if planta[yi][xi + 1] == ' ':
-                        # print("ENTROU")
-                        addCorridor(planta, corridors, xi + 1, yi)
-                        xi = xi + 1
-                        break
-
-                case 'B':
-                    # print(f'CAIU EM {p}')
-                    if planta[yi + 1][xi] == ' ':
-                        # print("ENTROU")
-                        addCorridor(planta, corridors, xi, yi +1)
-                        yi = yi + 1
-                        break
-
-                case 'C':
-                    # print(f'CAIU EM {p}')
-                    if planta[yi -1][xi] == ' ':
-                        # print("ENTROU")
-                        addCorridor(planta, corridors, xi, yi - 1)
-                        yi = yi - 1
-                        break
-                
-        print(xi, yi)
 
 def addInternalDoors(comodo, corridors, planta, width, height):
 
@@ -667,7 +606,6 @@ def addInternalDoors(comodo, corridors, planta, width, height):
             x , y = values
             # print(f'PAREDE: { x , y}')
             addDoorCorridor(comodo,corridors, planta, sideMenor[0][0], x, y)
-            conectaCorredores(planta, corridors, values, corridors[indexMenor])
             return
         
         sideMenor.pop(0)
@@ -775,7 +713,46 @@ def addWindows(andar, planta, width, height):
 
             addExternalSimbol(comodo, planta, sides[r], 'w')
 
+# Adiciona corredores para acesso a todos os cômodos
+def addCorridors(planta, corridors, width, height):   
+    for y in range(1, height - 1):  # Ajuste os limites para evitar índices fora do intervalo
+        for x in range(1, width - 1):  # Ajuste os limites para evitar índices fora do intervalo
+            if planta[y][x] == ' ':
+                # Verifica se há cômodos adjacentes
+                if (x > 0 and planta[y][x-1] != ' ' and planta[y][x-1] != simbols['corredor'].simbol) or \
+                    (x < width-1 and planta[y][x+1] != ' ' and planta[y][x+1] != simbols['corredor'].simbol) or \
+                    (y > 0 and planta[y-1][x] != ' ' and planta[y-1][x] != simbols['corredor'].simbol) or \
+                    (y < height-1 and planta[y+1][x] != ' ' and planta[y+1][x] != simbols['corredor'].simbol):
+                    planta[y][x] = simbols['corredor'].simbol
+                    addCorridor(planta, corridors, x, y)  # Corrigido a ordem dos parâmetros
 
+    # Conecta os corredores horizontalmente
+    for y in range(1, height - 1):  # Ajuste os limites para evitar índices fora do intervalo
+        start = None
+        for x in range(1, width - 1):  # Ajuste os limites para evitar índices fora do intervalo
+            if planta[y][x] == simbols['corredor'].simbol:
+                addCorridor(planta, corridors, x, y)  # Corrigido a ordem dos parâmetros
+                if start is None:
+                    start = x
+            elif start is not None:
+                for i in range(start, x):
+                    planta[y][i] = simbols['corredor'].simbol
+                    addCorridor(planta, corridors, i, y)  # Corrigido a ordem dos parâmetros
+                start = None
+
+    # Conecta os corredores verticalmente
+    for x in range(1, width - 1):  # Ajuste os limites para evitar índices fora do intervalo
+        start = None
+        for y in range(1, height - 1):  # Ajuste os limites para evitar índices fora do intervalo
+            if planta[y][x] == simbols['corredor'].simbol:
+                addCorridor(planta, corridors, x, y)  # Corrigido a ordem dos parâmetros
+                if start is None:
+                    start = y
+            elif start is not None:
+                for i in range(start, y):
+                    planta[i][x] = simbols['corredor'].simbol
+                    addCorridor(planta, corridors, x, i)  # Corrigido a ordem dos parâmetros
+                start = None
           
                     
             
@@ -836,10 +813,14 @@ def drawHouse(casa, direcao):
                 addExternalSimbol(comodo, planta, direcao, 'P')
             # Adiciona portas internas
             addInternalDoors(comodo, andar.corridors, planta, width, height)
+            addCorridors(planta, andar.corridors, width, height)
         
 
         addWindows(andar, planta, width, height)
 
+
+        # Adiciona corredores e conecta todos os cômodos
+        
         # Imprime a planta da casa
         print("\nPlanta da Casa:")
         print("+" + "-" * (width) + "+")
@@ -983,6 +964,8 @@ def main():
 
     # pop[0].printHouse()
     return pop[0]
+    
+
 
 
 if __name__ == "__main__":

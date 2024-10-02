@@ -19,7 +19,7 @@ def draw_furnitures(screen, comodo, andar, moveis_escolhidos):
         check = comodo_id.split('_')
         if check[0] == andar and check[1] == comodo:
             moveis_selecionados = comodo_movel[1]
-            print(comodo_id)
+            # print(comodo_id)
             for movel in moveis_selecionados:
                 # Desenha o móvel na tela usando pygame
                 pygame.draw.rect(screen, movel.cor, (movel.x, movel.y, movel.largura, movel.altura))
@@ -88,3 +88,14 @@ class Janela:
 
     def drawV(self, screen):
         pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2)
+
+class Corredor:
+    def __init__(self, x, y, escala):
+        self.x = x 
+        self.y = y
+        self.largura = 1 * escala
+        self.altura = 1 * escala
+        self.cor = (255, 0, 0) 
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.cor, (self.x, self.y, self.largura, self.altura))

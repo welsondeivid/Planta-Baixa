@@ -18,6 +18,7 @@ comodos_cores = {
     'closet': cor.PURPLE,
     'quarto': cor.OLIVE,
     'ginastica': cor.CHOCOLATE,
+    'corredor': cor.RED,
 }
 
 # Função para desenhar o porão
@@ -64,21 +65,35 @@ def draw_rooms(screen, rooms, moveis, andar):
         # Desenha os móveis do cômodo atual
         mv.draw_furnitures(screen, comodo, andar, moveis)
 
+def draw_corridors(screen, corridors, andar):
+    for corridor in corridors:
+        x, y, width, height = corridor
+        pygame.draw.rect(screen, comodos_cores["corredor"], (x, y, width, height))
+
+def draw_limites(screen, limites):
+    x, y, width, height = limites
+    pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH+5)
 
 # Função para desenhar a planta baixa do andar selecionado
-def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, MOVEIS):
+def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, CORRIDORS, MOVEIS, LIMITES):
     screen.fill(cor.WHITE)
 
     if floor == 'laje':
-        draw_laje(screen, largura_casa, altura_casa)
+        # draw_laje(screen, largura_casa, altura_casa)
+        draw_corridors(screen, CORRIDORS["Laje"], "Laje")
         draw_rooms(screen, ROOMS["Laje"], MOVEIS, "Laje")
+        draw_limites(screen, LIMITES["Laje"])
     elif floor == 'terreo':
-        draw_terreo_floor(screen, largura_casa, altura_casa)
+        # draw_terreo_floor(screen, largura_casa, altura_casa)
+        draw_corridors(screen, CORRIDORS["Térreo"], "Térreo")
         draw_rooms(screen, ROOMS["Térreo"], MOVEIS,"Térreo")
-    elif floor == 'pAndar':
-        draw_pAndar_floor(screen, largura_casa, altura_casa)
-        draw_rooms(screen, ROOMS["1 Andar"], MOVEIS, "1 Andar")
+        draw_limites(screen, LIMITES["Térreo"])
 
+    elif floor == 'pAndar':
+        # draw_pAndar_floor(screen, largura_casa, altura_casa)
+        draw_corridors(screen, CORRIDORS["1 Andar"], "1 Andar")
+        draw_rooms(screen, ROOMS["1 Andar"], MOVEIS, "1 Andar")
+        draw_limites(screen, LIMITES["1 Andar"])
 def coords(screen, width, height):
     x = round((screen.get_width() - width) // 2)
     y = round((screen.get_height() - height) // 2)
@@ -94,35 +109,40 @@ def set_escala(largura_tela, altura_tela, largura_casa, altura_casa):
 
     return escala * largura_casa, escala * altura_casa
 
-def encontrar_comodo(rooms, comodo_nome, indice):
-    indice = int(indice)
+def fillCorners(corridors):
+    tam = len(corridors)
+    for i in range(tam):
+        for j in range(i+1, tam):
+            if abs(corridors[i][0] - corridors[j][0]) == 1 and abs(corridors[i][1] - corridors[j][1]) == 1:
+                # Adiciona as coordenadas dos pontos dos cantos entre os corredores
+                corridors.append([corridors[i][0], corridors[j][1]])
+                corridors.append([corridors[j][0], corridors[i][1]])
+def encontrar_comodo(rooms, comodo_nome):
     for floor_name, floor_rooms in rooms.items():  # Itera sobre os andares e seus cômodos
-        
-        count = 0  # Contador para os cômodos encontrados
         for room in floor_rooms:
             comodo = room[0].split('_')[1]  # Obtém o nome do cômodo
-            print(comodo_nome, comodo)
             if comodo == comodo_nome:
-                # count += 1  # Incrementa o contador
-                print(count, indice)
-                
-                while count <= indice:
-                    count += 1
-                    if count == indice:  # Se for o índice desejado, retorna
-                        print("SIM")
-                        return room[2:]  # Retorna x, y, largura, altura
+                return room[2:]  # Retorna x, y, largura, altura
     return None  # Retorna None se o cômodo não for encontrado
 
+def pegar_medidas_por_id(dicionario, id_procurado):
+    # Percorre cada chave (andar) e suas respectivas listas de cômodos
+    for andar, comodos in dicionario.items():
+        # Percorre a lista de cômodos em cada andar
+        for comodo in comodos:
+            if comodo[0] == id_procurado:  # Compara o ID
+                # Retorna as medidas (posição x, posição y, largura, altura)
+                return comodo[2:6]  # Índices 2, 3, 4, 5 correspondem a x, y, largura, altura
+    return None  # Retorna None se o ID não for encontrado
 
 def escolher_moveis(moveis, rooms, comodo_id, escala):
-    # Busca o cômodo baseado no ID
-    andar_nome, tipo_comodo, index = comodo_id.split('_')  # Ex: "andar1_quarto_1"
-    
-    # Verifica se o cômodo está em moveis
+    andar, tipo_comodo, index = comodo_id.split('_')  # Corrigido para desempacotar corretamente
+
     if tipo_comodo in moveis:
         moveis_selecionados = []
-        print(tipo_comodo, index)
-        medidas = encontrar_comodo(rooms, tipo_comodo, index)
+        medidas = pegar_medidas_por_id(rooms, comodo_id)  # Preenche medidas com as dimensões do cômodo
+        if not medidas:
+            return []  # Retorna vazio se não encontrar as medidas do cômodo
         
         # Seleciona 3 móveis aleatoriamente do cômodo
         for movel in random.sample(moveis[tipo_comodo], 3):
@@ -168,7 +188,7 @@ def escolher_todos_moveis(rooms, moveis, escala):
     return moveis_escolhidos
 
 def posicao_valida(movel, moveis_existentes, medidas):
-    return True
+    # return True
     # Verifica se o móvel está dentro dos limites do cômodo
     if movel.x < medidas[0] or movel.y < medidas[1] or \
        movel.x + movel.largura > medidas[0] + medidas[2] or \
@@ -197,19 +217,13 @@ def converter_para_pixels_e_limitar(x, y, largura, altura, escala, largura_plant
     # Ajustar x e largura
     if x_pixel < 0:
         x_pixel = 0
-        if largura_pixel > 0:
-            largura_pixel += x_pixel
-            if x_pixel + largura_pixel > largura_planta:
-                largura_pixel = largura_planta - x_pixel
+    if x_pixel + largura_pixel > largura_planta:
+        largura_pixel = largura_planta - x_pixel
     
     # Ajustar y e altura
     if y_pixel < 0:
         y_pixel = 0
-        if altura_pixel > 0:
-            altura_pixel += y_pixel
-            if y_pixel + altura_pixel > altura_planta:
-                altura_pixel = altura_planta - y_pixel
-    if largura_pixel > 0:
-        return x_pixel, y_pixel, largura_pixel, altura_pixel
-    else:
-        return x_pixel, y_pixel
+    if y_pixel + altura_pixel > altura_planta:
+        altura_pixel = altura_planta - y_pixel
+
+    return x_pixel, y_pixel, largura_pixel, altura_pixel
