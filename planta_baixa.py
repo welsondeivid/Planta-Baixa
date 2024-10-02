@@ -13,6 +13,7 @@ def planta(pygame, dados):
         parts = data.split(' ')
         largura_casa = int(parts[0])
         altura_casa = int(parts[1])
+        orientacao = parts[2]
 
     # Configurando a janela
     info = pygame.display.Info()
@@ -36,13 +37,15 @@ def planta(pygame, dados):
     CORRIDORS = {}
     LIMITES = {}
 
+    translationX, translationY = ut.coords(planta, largura_casa, altura_casa)
+    portaFrontalX, portaFrontalY = dados.portax, dados.portay
+    portaFrontal = None
+
     for andar in dados.andares:
         andar_nome = andar.nome
         ROOMS[andar_nome] = []
         CORRIDORS[andar_nome] = []
         LIMITES[andar_nome] = [largura_casa, altura_casa, 0, 0]
-
-        translationX, translationY = ut.coords(planta, largura_casa, altura_casa)
 
         # Criação do corredor
         ut.fillCorners(andar.corridors)
@@ -75,11 +78,12 @@ def planta(pygame, dados):
 
             # Criação da porta
             if comodo.portax is not None and comodo.portax != "":
-                if (comodo.portay == comodo.inicioy or comodo.portay == comodo.inicioy + comodo.altura) and (comodo.iniciox <= comodo.portax <= comodo.iniciox + comodo.largura):
+                if comodo.portax == comodo.iniciox and comodo.portay == comodo.inicioy and comodo.tipo != "sala":
+                    porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax) * escala, escala=escala, orientacao="V")
+                elif (comodo.portay == comodo.inicioy or comodo.portay == comodo.inicioy + comodo.altura) and (comodo.iniciox <= comodo.portax <= comodo.iniciox + comodo.largura):
                     porta = moveis.Porta(x=translationX + (comodo.portax) * escala, y=translationY + (comodo.portay * escala), escala=escala, orientacao="H")
                 elif (comodo.portax == comodo.iniciox or comodo.portax == comodo.iniciox + comodo.largura) and (comodo.inicioy <= comodo.portay <= comodo.inicioy + comodo.altura):
                     porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax) * escala, escala=escala, orientacao="V")
-
             tipo = comodo.tipo
             x, y, largura, altura = ut.converter_para_pixels_e_limitar(comodo.iniciox, comodo.inicioy, comodo.largura, comodo.altura, escala, largura_casa, altura_casa)
             
@@ -88,7 +92,16 @@ def planta(pygame, dados):
                 ROOMS[andar_nome].append([comodo_id, tipo, x + translationX, y + translationY, largura, altura, janela, porta])
             else:
                 ROOMS[andar_nome].append([comodo_id, tipo, x + translationX, y + translationY, largura, altura])
+
         # print(andar_nome, CORRIDORS[andar_nome], "\n", ROOMS[andar_nome])
+
+    # Criação da porta frontal após o laço, usando a variável LIMITES
+    if portaFrontalX is not None and portaFrontalX != "":
+        minX, minY, maxX, maxY = LIMITES['Térreo']
+        if (portaFrontalY * escala == minY or portaFrontalY * escala == maxY) and (minX <= portaFrontalX * escala <= maxX):
+            portaFrontal = moveis.PortaFrontal(x=translationX + (portaFrontalX * escala), y=translationY + (portaFrontalY * escala), escala=escala, orientacao="H")
+        elif (portaFrontalX * escala == minX or portaFrontalX * escala == maxX) and (minY <= portaFrontalY * escala <= maxY):
+            portaFrontal = moveis.PortaFrontal(y=translationY + (portaFrontalY * escala), x=translationX + (portaFrontalX * escala), escala=escala, orientacao="V")
 
     MOVEIS = {
         "sala": [
@@ -166,5 +179,5 @@ def planta(pygame, dados):
                     pygame.quit()
                     sys.exit()
                             
-        ut.draw_floor_plan(planta, current_floor, largura_casa, altura_casa, ROOMS, CORRIDORS, MOVEIS_ESCOLHIDOS, LIMITES)
+        ut.draw_floor_plan(planta, current_floor, largura_casa, altura_casa, ROOMS, CORRIDORS, MOVEIS_ESCOLHIDOS, LIMITES, portaFrontal)
         pygame.display.flip()  # Atualizando a tela

@@ -51,16 +51,17 @@ def draw_rooms(screen, rooms, moveis, andar):
         pygame.draw.rect(screen, comodos_cores[comodo], (x, y, width, height))
         
         # Desenha as janelas e portas, se existirem
-        if janela:
-            if janela.largura:
-                janela.drawH(screen)
-            elif janela.altura:
-                janela.drawV(screen)
         if porta:
             if porta.largura:
                 porta.drawH(screen)
             elif porta.altura:
                 porta.drawV(screen)
+
+        if janela:
+            if janela.largura:
+                janela.drawH(screen)
+            elif janela.altura:
+                janela.drawV(screen)
 
         # Desenha os móveis do cômodo atual
         mv.draw_furnitures(screen, comodo, andar, moveis)
@@ -74,26 +75,35 @@ def draw_limites(screen, limites):
     x, y, width, height = limites
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH+5)
 
+def draw_porta_frontal(screen, portaFrontal):
+    if portaFrontal:
+        if portaFrontal.largura:
+            portaFrontal.drawH(screen)
+        elif porta.altura:
+            portaFrontal.drawV(screen)
+    else:
+        print("NÃO")
+
 # Função para desenhar a planta baixa do andar selecionado
-def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, CORRIDORS, MOVEIS, LIMITES):
+def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, CORRIDORS, MOVEIS, LIMITES, portaFrontal):
     screen.fill(cor.WHITE)
 
     if floor == 'laje':
         # draw_laje(screen, largura_casa, altura_casa)
+        draw_limites(screen, LIMITES["Laje"])
         draw_corridors(screen, CORRIDORS["Laje"], "Laje")
         draw_rooms(screen, ROOMS["Laje"], MOVEIS, "Laje")
-        draw_limites(screen, LIMITES["Laje"])
     elif floor == 'terreo':
         # draw_terreo_floor(screen, largura_casa, altura_casa)
+        draw_porta_frontal(screen, portaFrontal)
+        draw_limites(screen, LIMITES["Térreo"])
         draw_corridors(screen, CORRIDORS["Térreo"], "Térreo")
         draw_rooms(screen, ROOMS["Térreo"], MOVEIS,"Térreo")
-        draw_limites(screen, LIMITES["Térreo"])
-
     elif floor == 'pAndar':
         # draw_pAndar_floor(screen, largura_casa, altura_casa)
+        draw_limites(screen, LIMITES["1 Andar"])
         draw_corridors(screen, CORRIDORS["1 Andar"], "1 Andar")
         draw_rooms(screen, ROOMS["1 Andar"], MOVEIS, "1 Andar")
-        draw_limites(screen, LIMITES["1 Andar"])
 def coords(screen, width, height):
     x = round((screen.get_width() - width) // 2)
     y = round((screen.get_height() - height) // 2)

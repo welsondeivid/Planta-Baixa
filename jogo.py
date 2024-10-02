@@ -8,6 +8,7 @@ import pygame
 menu.menu(pygame)
 
 dados = genetico.main()
+print("COORDS", dados.portax, dados.portay)
 for andar in dados.andares:
     print("#######################", andar.nome, "#######################")
     print(andar.corridors)

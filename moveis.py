@@ -56,32 +56,32 @@ class movel:
 class Porta:
     def __init__(self, x, y, escala, orientacao):
         if (orientacao == "H"):
-            self.largura = 0.90 * escala
+            self.largura = 1.00 * escala
             self.altura = None
         else:
-            self.altura = 0.90 * escala
+            self.altura = 1 * escala
             self.largura = None
         self.x = x 
         self.y = y
         self.cor = (0, 0, 255)
 
     def drawH(self, screen):
-        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2)
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2+3)
 
     def drawV(self, screen):
-        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2)
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2+3)
 
 class Janela:
     def __init__(self, x, y, escala, orientacao):
         if (orientacao == "H"):
-            self.largura = 1.50 * escala
+            self.largura = escala
             self.altura = None
         else:
-            self.altura = 1.50 * escala
+            self.altura = escala
             self.largura = None
         self.x = x
         self.y = y 
-        self.cor = (0, 0, 255)
+        self.cor = (0, 255, 0)
 
     def drawH(self, screen):
         pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2)
@@ -93,9 +93,30 @@ class Corredor:
     def __init__(self, x, y, escala):
         self.x = x 
         self.y = y
-        self.largura = 1 * escala
-        self.altura = 1 * escala
+        self.largura = escala
+        self.altura = escala
         self.cor = (255, 0, 0) 
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.cor, (self.x, self.y, self.largura, self.altura))
+
+class PortaFrontal:
+    def __init__(self, x, y, escala, orientacao):
+        self.x = x
+        self.y = y
+        self.escala = escala
+        self.orientacao = orientacao
+        self.cor = (255, 255, 0)
+
+        if (orientacao == "H"):
+            self.largura = escala
+            self.altura = None
+        else:
+            self.altura = escala
+            self.largura = None
+
+    def drawH(self, screen):
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2+9)
+
+    def drawV(self, screen):
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2+9)
