@@ -58,7 +58,7 @@ class Porta:
         if (orientacao == "H"):
             self.largura = 1.00 * escala
             self.altura = None
-        else:
+        elif (orientacao == "V"):
             self.altura = 1 * escala
             self.largura = None
         self.x = x 
@@ -66,10 +66,10 @@ class Porta:
         self.cor = (0, 0, 255)
 
     def drawH(self, screen):
-        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2+3)
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2+9)
 
     def drawV(self, screen):
-        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2+3)
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2+9)
 
 class Janela:
     def __init__(self, x, y, escala, orientacao):

@@ -69,6 +69,13 @@ def planta(pygame, dados):
             janela = None
             porta = None
 
+            # Criação da porta frontal
+            if portaFrontalX is not None and portaFrontalX != "" and comodo.tipo == "sala":
+                if (portaFrontalY == comodo.inicioy or portaFrontalY == comodo.inicioy + comodo.altura) and (comodo.iniciox <= portaFrontalX <= comodo.iniciox + comodo.largura):
+                    portaFrontal = moveis.PortaFrontal(x=translationX + (portaFrontalX * escala), y=translationY + (portaFrontalY * escala), escala=escala, orientacao="H")
+                elif (portaFrontalX == comodo.iniciox or portaFrontalX == comodo.iniciox + comodo.largura) and (comodo.inicioy <= portaFrontalY <= comodo.inicioy + comodo.altura):
+                    portaFrontal = moveis.PortaFrontal(y=translationY + (portaFrontalY * escala), x=translationX + (portaFrontalX * escala), escala=escala, orientacao="V")
+
             # Criação da janela
             if comodo.janelax is not None and comodo.janelax != "":
                 if (comodo.janelay == comodo.inicioy or comodo.janelay == comodo.inicioy + comodo.altura) and (comodo.iniciox <= comodo.janelax <= comodo.iniciox + comodo.largura):
@@ -78,30 +85,58 @@ def planta(pygame, dados):
 
             # Criação da porta
             if comodo.portax is not None and comodo.portax != "":
-                if comodo.portax == comodo.iniciox and comodo.portay == comodo.inicioy and comodo.tipo != "sala":
-                    porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax) * escala, escala=escala, orientacao="V")
-                elif (comodo.portay == comodo.inicioy or comodo.portay == comodo.inicioy + comodo.altura) and (comodo.iniciox <= comodo.portax <= comodo.iniciox + comodo.largura):
-                    porta = moveis.Porta(x=translationX + (comodo.portax) * escala, y=translationY + (comodo.portay * escala), escala=escala, orientacao="H")
-                elif (comodo.portax == comodo.iniciox or comodo.portax == comodo.iniciox + comodo.largura) and (comodo.inicioy <= comodo.portay <= comodo.inicioy + comodo.altura):
-                    porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax) * escala, escala=escala, orientacao="V")
+
+                print(comodo.tipo)
+                
+                if (comodo.portay == comodo.inicioy or comodo.portay == comodo.altura) and (comodo.iniciox <= comodo.portax <= comodo.iniciox + comodo.largura):
+                    print("porta horizontal: Qualquer")
+                    porta = moveis.Porta(x=translationX + (comodo.portax * escala), y=(comodo.portay * escala), escala=escala, orientacao="H")
+                    if comodo.iniciox == 1 and comodo.portay == comodo.inicioy:
+                        porta = moveis.Porta(x=translationX + (comodo.portax * escala), y=(comodo.portay * escala) + escala, escala=escala, orientacao="H")
+
+                elif (comodo.portax == comodo.iniciox or comodo.portax == comodo.largura) and (comodo.inicioy <= comodo.portay <= comodo.inicioy + comodo.altura):
+                    # Verificação das condições para a porta
+                    for corridor in andar.corridors:
+                        if corridor[1] == comodo.portay:
+                            if (corridor[0] - comodo.portax) == 1:
+                                print("porta de corredor esquerda")
+                                porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + ((comodo.portax) * escala) + escala, escala=escala, orientacao="V")
+                                break
+
+                            elif (comodo.portax - corridor[0]) == 1:
+                                print("porta de corredor direita")
+                                porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax * escala), escala=escala, orientacao="V")
+                                break
+                # Verificação das quinas do cômodo
+                if comodo.portax == comodo.iniciox and comodo.portay == comodo.inicioy:
+                    print("Porta no canto superior esquerdo")
+                    porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax * escala), escala=escala, orientacao="V")
+                elif comodo.portax + 1 == comodo.iniciox + comodo.largura and comodo.portay == comodo.inicioy:
+                    print("Porta no canto superior direito")
+                    porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax * escala) + escala, escala=escala, orientacao="V")
+                elif comodo.portax == comodo.iniciox and comodo.portay == comodo.altura:
+                    print("Porta no canto inferior esquerdo")
+                    porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax * escala), escala=escala, orientacao="H")
+                elif comodo.portax + 1 == comodo.iniciox + comodo.largura and comodo.portay == comodo.inicioy + comodo.altura:
+                    print("Porta no canto inferior direito")
+                    porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax * escala), escala=escala, orientacao="H")
+
+                print(f"Porta adicionada para {comodo.tipo}: x={porta.x}, y={porta.y}")
+
             tipo = comodo.tipo
             x, y, largura, altura = ut.converter_para_pixels_e_limitar(comodo.iniciox, comodo.inicioy, comodo.largura, comodo.altura, escala, largura_casa, altura_casa)
             
             # Adiciona o cômodo à estrutura
-            if janela or porta:
+            if janela and not porta:
+                ROOMS[andar_nome].append([comodo_id, tipo, x + translationX, y + translationY, largura, altura, janela])
+            elif porta and not janela:
+                ROOMS[andar_nome].append([comodo_id, tipo, x + translationX, y + translationY, largura, altura, porta])
+            elif porta and janela:
                 ROOMS[andar_nome].append([comodo_id, tipo, x + translationX, y + translationY, largura, altura, janela, porta])
             else:
                 ROOMS[andar_nome].append([comodo_id, tipo, x + translationX, y + translationY, largura, altura])
 
         # print(andar_nome, CORRIDORS[andar_nome], "\n", ROOMS[andar_nome])
-
-    # Criação da porta frontal após o laço, usando a variável LIMITES
-    if portaFrontalX is not None and portaFrontalX != "":
-        minX, minY, maxX, maxY = LIMITES['Térreo']
-        if (portaFrontalY * escala == minY or portaFrontalY * escala == maxY) and (minX <= portaFrontalX * escala <= maxX):
-            portaFrontal = moveis.PortaFrontal(x=translationX + (portaFrontalX * escala), y=translationY + (portaFrontalY * escala), escala=escala, orientacao="H")
-        elif (portaFrontalX * escala == minX or portaFrontalX * escala == maxX) and (minY <= portaFrontalY * escala <= maxY):
-            portaFrontal = moveis.PortaFrontal(y=translationY + (portaFrontalY * escala), x=translationX + (portaFrontalX * escala), escala=escala, orientacao="V")
 
     MOVEIS = {
         "sala": [
@@ -135,7 +170,7 @@ def planta(pygame, dados):
         ],
         "banheiro": [
             moveis.movel("Vaso sanitário", 0.37, 0.64, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro")),
-            moveis.movel("Banheira", 0.71, 1.65, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro")),
+            moveis.movel("Banheira", 0.71, 1.15, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro")),
             moveis.movel("Pia com armário", 0.70, 0.45, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro")),
             # moveis.movel("Box de banheiro", 1.50, 2.00, cor.BROWN, escala, ut.encontrar_comodo(ROOMS, "banheiro"))
         ],

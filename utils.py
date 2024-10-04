@@ -21,6 +21,9 @@ comodos_cores = {
     'corredor': cor.RED,
 }
 
+# Adicione esta variável global no início do arquivo
+frame_counter = 0
+
 # Função para desenhar o porão
 def draw_laje(screen, width, height):
     x, y = coords(screen, width, height)
@@ -36,21 +39,26 @@ def draw_pAndar_floor(screen, width, height):
     x, y = coords(screen, width, height)
     pygame.draw.rect(screen, cor.BLACK, (x, y, width, height), LINE_WIDTH)  # Contorno do andar superior
 
+import pygame
+
+# Adicione esta variável global no início do arquivo
+
 def draw_rooms(screen, rooms, moveis, andar):
-    for room in rooms:  # Itera sobre cada andar
+    
+    # Configuração da fonte
+    font = pygame.font.Font(None, 36)  # Você pode ajustar o tamanho da fonte conforme necessário
+    
+    for room in rooms:
         id, comodo, x, y, width, height, *rest = room
         janela = None
         porta = None
         
-        # Se houver janelas e portas, atribua-as às variáveis
         if len(rest) >= 2:
             janela = rest[0]
             porta = rest[1]
-            
-        # Desenha o cômodo
+        
         pygame.draw.rect(screen, comodos_cores[comodo], (x, y, width, height))
         
-        # Desenha as janelas e portas, se existirem
         if porta:
             if porta.largura:
                 porta.drawH(screen)
@@ -62,9 +70,19 @@ def draw_rooms(screen, rooms, moveis, andar):
                 janela.drawH(screen)
             elif janela.altura:
                 janela.drawV(screen)
-
+        
         # Desenha os móveis do cômodo atual
         mv.draw_furnitures(screen, comodo, andar, moveis)
+
+        texto = comodo[:2].upper()  # Pega as duas primeiras letras do nome do cômodo
+        if comodo == "salaDeJantar":
+            texto = "SJ"
+        elif comodo == "areaServico":
+            texto = "AS"
+        texto_surface = font.render(texto, True, (0, 0, 0))  # Renderiza o texto em preto
+        texto_rect = texto_surface.get_rect()
+        texto_rect.center = (x + width // 2, y + height // 2)  # Posiciona o texto no centro do cômodo
+        screen.blit(texto_surface, texto_rect)
 
 def draw_corridors(screen, corridors, andar):
     for corridor in corridors:
@@ -79,10 +97,8 @@ def draw_porta_frontal(screen, portaFrontal):
     if portaFrontal:
         if portaFrontal.largura:
             portaFrontal.drawH(screen)
-        elif porta.altura:
+        elif portaFrontal.altura:
             portaFrontal.drawV(screen)
-    else:
-        print("NÃO")
 
 # Função para desenhar a planta baixa do andar selecionado
 def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, CORRIDORS, MOVEIS, LIMITES, portaFrontal):
@@ -95,10 +111,10 @@ def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, CORRIDORS, 
         draw_rooms(screen, ROOMS["Laje"], MOVEIS, "Laje")
     elif floor == 'terreo':
         # draw_terreo_floor(screen, largura_casa, altura_casa)
-        draw_porta_frontal(screen, portaFrontal)
         draw_limites(screen, LIMITES["Térreo"])
         draw_corridors(screen, CORRIDORS["Térreo"], "Térreo")
         draw_rooms(screen, ROOMS["Térreo"], MOVEIS,"Térreo")
+        draw_porta_frontal(screen, portaFrontal)
     elif floor == 'pAndar':
         # draw_pAndar_floor(screen, largura_casa, altura_casa)
         draw_limites(screen, LIMITES["1 Andar"])
