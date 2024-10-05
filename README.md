@@ -1,8 +1,10 @@
 # Projeto de Planta Baixa
 
 ## INTEGRANTES:
-- WELSON DEIVID
-- RICK MARTIM LINO DOS SANTOS
+- José Alexandre da Silva França
+- Mateus dos Santos Ferreira
+- Rick Martim Lino dos Santos
+- Welson Deivid dos Santos
 
 ## INFORMAÇÕES IMPORTANTES:
 - TAMANHO MÍNIMO = 25 x 15
