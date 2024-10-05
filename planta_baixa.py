@@ -88,6 +88,7 @@ def planta(pygame, dados):
             if comodo.portax is not None and comodo.portax != "":
 
                 print(comodo.tipo)
+                porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax * escala), escala=escala, orientacao="V")
                 
                 if (comodo.portay == comodo.inicioy or comodo.portay == comodo.inicioy  + comodo.altura or comodo.portay == comodo.altura) and (comodo.iniciox <= comodo.portax <= comodo.iniciox + comodo.largura):
                     print("porta horizontal: Qualquer")
