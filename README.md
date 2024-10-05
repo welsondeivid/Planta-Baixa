@@ -1,2 +1,23 @@
-# Planta-Baixa
-Repositório para avaliação da disciplina Computação Evolucionária na UFAL
+# Projeto de Planta Baixa
+
+## INTEGRANTES:
+- WELSON DEIVID
+- RICK MARTIM LINO DOS SANTOS
+
+## INFORMAÇÕES IMPORTANTES:
+- TAMANHO MÍNIMO = 25 x 15
+- C, B, D, E = CIMA, BAIXO, DIREITA, ESQUERDA 
+
+## CONTROLES:
+- TROCA DE ANDARES: tecla up e down
+
+## LEGENDA DOS CÔMODOS:
+- SA = SALA DE ESTAR
+- BA = BANHEIRO
+- QU = QUARTO
+- AS = ÁREA DE SERVIÇO
+- SJ = SALA DE JANTAR
+- GI = GINÁSTICA
+- ES = ESCADA
+- CL = CLOSET
+- CO = COZINHA
