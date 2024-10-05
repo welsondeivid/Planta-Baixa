@@ -217,19 +217,19 @@ def escolher_moveis(moveis, rooms, comodo_id, escala):
 
 
 def escolher_todos_moveis(rooms, moveis, escala):
-    moveis_escolhidos = []
+    moveis_escolhidos = {}
     
     # Percorre cada andar no dicionário de andares
     for andar, lista_de_comodos in rooms.items():
         # Percorre cada cômodo na lista do andar
         for room in lista_de_comodos:
-            comodo_id = room[0]  # ID do cômodo
+            comodo = room[0]  # Desestrutura o cômodo
             
             # Seleciona móveis para o cômodo
-            moveis_do_comodo = escolher_moveis(moveis, rooms, comodo_id, escala)
+            moveis_do_comodo = escolher_moveis(moveis, rooms, comodo, escala)
             
             if moveis_do_comodo:
-                moveis_escolhidos.append([comodo_id, moveis_do_comodo])  # Adiciona como lista: [comodo_id, lista_de_moveis]
+                moveis_escolhidos[comodo] = moveis_do_comodo  # Associa os móveis ao cômodo
     
     return moveis_escolhidos
 
@@ -301,9 +301,11 @@ def desenhar_legenda(planta, moveis_escolhidos, limites, andar_atual):
     titulo = fonte.render("Legenda de Móveis", True, (0, 0, 0))
     planta.blit(titulo, (x_legenda + 5, y_legenda + 5))
     y_legenda += 25
+
+    print(moveis_escolhidos)
     
     # Iterar sobre os móveis escolhidos do andar atual
-    for comodo_id, moveis in moveis_escolhidos:
+    for comodo_id, moveis in moveis_escolhidos.items():
         if comodo_id.startswith(andar_atual):
             for movel in moveis:
                 # Desenhar retângulo com a cor do móvel
@@ -319,11 +321,11 @@ def desenhar_legenda(planta, moveis_escolhidos, limites, andar_atual):
             y_legenda += 10
         
         # Verificar se a legenda ultrapassou o limite inferior do andar
-            if y_legenda > limites[3] - 20:
-                # Mover para uma nova coluna à direita
-                x_legenda += largura_legenda
-                y_legenda = limites[1]
-                
-                # Desenhar novo fundo para a nova coluna
-                pygame.draw.rect(planta, cor_fundo, (x_legenda, limites[1], largura_legenda, altura_legenda))
-                pygame.draw.rect(planta, cor.BLACK, (x_legenda, limites[1], largura_legenda, altura_legenda), 1)
+        if y_legenda > limites[3] - 20:
+            # Mover para uma nova coluna à direita
+            x_legenda += largura_legenda
+            y_legenda = limites[1]
+            
+            # Desenhar novo fundo para a nova coluna
+            pygame.draw.rect(planta, cor_fundo, (x_legenda, limites[1], largura_legenda, altura_legenda))
+            pygame.draw.rect(planta, cor.BLACK, (x_legenda, limites[1], largura_legenda, altura_legenda), 1)

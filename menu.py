@@ -92,4 +92,10 @@ def menu(pygame):
         # Desenha o prompt e o texto de input
         draw_input_box(current_prompt, input_text, font, menu)
 
+        # Adicionar texto sobre o tamanho mínimo da casa
+        tamanho_minimo_texto = font.render("Tamanho mínimo da casa: 25x15", True, BLACK)
+        tamanho_minimo_rect = tamanho_minimo_texto.get_rect()
+        tamanho_minimo_rect.bottomleft = (10, altura - 10)  # Posiciona o texto no canto inferior esquerdo
+        menu.blit(tamanho_minimo_texto, tamanho_minimo_rect)
+
         pygame.display.flip()  # Atualiza a tela
