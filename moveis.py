@@ -4,24 +4,24 @@ import random
 pygame.init()
 
 LINE_WIDTH = 1
-LINE_WIDTH2 = 2
+LINE_WIDTH2 = 5
 
+def draw_furnitures(screen, comodo, andar, moveis_escolhidos):
+    # Percorre a lista de móveis escolhidos, independentemente do nome do cômodo
+    for comodo_movel in moveis_escolhidos:
+        comodo_id = comodo_movel[0]  # ID do cômodo
+          # Lista de móveis para esse cômodo
 
-def draw_furnitures(screen, comodo, moveis, moveis_usados):
+        # print("comodo: ", comodo, "ANDAR: ", andar, "MOVEIS", comodo_movel)
+        # print(comodo_movel[0].split('_'))
 
-    for chave in moveis:
-        if chave.startswith(comodo) or not moveis_usados[chave]:
-            print(chave.startswith(comodo), not moveis_usados[chave])
-        # Verifica se o nome do cômodo é o início da chave (comodo1, quarto2, etc.)
-        if chave.startswith(comodo) and not moveis_usados[chave]:
-            print("ENTROU", moveis[chave])
-        # Seleciona 3 móveis aleatoriamente do cômodo
-            moveis_selecionados = moveis[chave]
-            moveis_usados[chave] = True
-
-            print(moveis_selecionados)
+        # Para cada móvel na lista de móveis selecionados, desenha o móvel na tela
+        check = comodo_id.split('_')
+        if check[0] == andar and check[1] == comodo:
+            moveis_selecionados = comodo_movel[1]
+            # print(comodo_id)
             for movel in moveis_selecionados:
-                # Desenha cada móvel na tela
+                # Desenha o móvel na tela usando pygame
                 pygame.draw.rect(screen, movel.cor, (movel.x, movel.y, movel.largura, movel.altura))
 
 class movel:
@@ -46,46 +46,77 @@ class movel:
     
     def cabe(self, medidas):
         # Verifica se o móvel cabe no cômodo
-        # print(medidas)
         return self.largura <= medidas[2] and self.altura <= medidas[3]
     
 
     def __repr__(self):
-        return f"{self.nome}\nlargura: {self.largura}\naltura: {self.altura}\nX: {self.x}\nY: {self.y}"
+        return f"{self.nome}\nlargura: {self.largura}\naltura: {self.altura}\nX: {self.x}\nY: {self.y}\ncor: {self.cor}"
     
 
 class Porta:
     def __init__(self, x, y, escala, orientacao):
         if (orientacao == "H"):
-            self.largura = 0.90 * escala
+            self.largura = 1.00 * escala
             self.altura = None
-        else:
-            self.altura = 0.90 * escala
+        elif (orientacao == "V"):
+            self.altura = 1 * escala
             self.largura = None
         self.x = x 
         self.y = y
         self.cor = (0, 0, 255)
 
     def drawH(self, screen):
-        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2)
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2+9)
 
     def drawV(self, screen):
-        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2)
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2+9)
 
 class Janela:
     def __init__(self, x, y, escala, orientacao):
         if (orientacao == "H"):
-            self.largura = 1.50 * escala
+            self.largura = escala
             self.altura = None
         else:
-            self.altura = 1.50 * escala
+            self.altura = escala
             self.largura = None
         self.x = x
         self.y = y 
-        self.cor = (0, 0, 255)
+        self.cor = (0, 255, 0)
 
     def drawH(self, screen):
         pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2)
 
     def drawV(self, screen):
         pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2)
+
+class Corredor:
+    def __init__(self, x, y, escala):
+        self.x = x 
+        self.y = y
+        self.largura = escala
+        self.altura = escala
+        self.cor = (128, 128, 128) 
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.cor, (self.x, self.y, self.largura, self.altura))
+
+class PortaFrontal:
+    def __init__(self, x, y, escala, orientacao):
+        self.x = x
+        self.y = y
+        self.escala = escala
+        self.orientacao = orientacao
+        self.cor = (255, 0, 0)
+
+        if (orientacao == "H"):
+            self.largura = escala
+            self.altura = None
+        else:
+            self.altura = escala
+            self.largura = None
+
+    def drawH(self, screen):
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.largura + self.x, self.y), LINE_WIDTH2+9)
+
+    def drawV(self, screen):
+        pygame.draw.line(screen, self.cor, (self.x, self.y), (self.x, self.altura + self.y), LINE_WIDTH2+9)
