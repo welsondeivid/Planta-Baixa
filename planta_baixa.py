@@ -89,13 +89,13 @@ def planta(pygame, dados):
 
                 print(comodo.tipo)
                 
-                if (comodo.portay == comodo.inicioy or comodo.portay == comodo.altura) and (comodo.iniciox <= comodo.portax <= comodo.iniciox + comodo.largura):
+                if (comodo.portay == comodo.inicioy or comodo.portay == comodo.inicioy  + comodo.altura or comodo.portay == comodo.altura) and (comodo.iniciox <= comodo.portax <= comodo.iniciox + comodo.largura):
                     print("porta horizontal: Qualquer")
                     porta = moveis.Porta(x=translationX + (comodo.portax * escala), y=(comodo.portay * escala), escala=escala, orientacao="H")
                     if comodo.iniciox == 1 and comodo.portay == comodo.inicioy:
                         porta = moveis.Porta(x=translationX + (comodo.portax * escala), y=(comodo.portay * escala) + escala, escala=escala, orientacao="H")
 
-                elif (comodo.portax == comodo.iniciox or comodo.portax == comodo.largura) and (comodo.inicioy <= comodo.portay <= comodo.inicioy + comodo.altura):
+                elif (comodo.portax == comodo.iniciox or comodo.portax == comodo.iniciox + comodo.largura or comodo.portax == comodo.largura) and (comodo.inicioy <= comodo.portay <= comodo.inicioy + comodo.altura):
                     # Verificação das condições para a porta
                     for corridor in andar.corridors:
                         if corridor[1] == comodo.portay:
@@ -122,7 +122,7 @@ def planta(pygame, dados):
                     print("Porta no canto inferior direito")
                     porta = moveis.Porta(y=translationY + (comodo.portay * escala), x=translationX + (comodo.portax * escala), escala=escala, orientacao="H")
 
-                print(f"Porta adicionada para {comodo.tipo}: x={porta.x}, y={porta.y}")
+                # print(f"Porta adicionada para {comodo.tipo}: x={porta.x}, y={porta.y}")
 
             tipo = comodo.tipo
             x, y, largura, altura = ut.converter_para_pixels_e_limitar(comodo.iniciox, comodo.inicioy, comodo.largura, comodo.altura, escala, largura_casa, altura_casa)

@@ -41,13 +41,14 @@ class Casa:
 
     def printHouse(self):
         print(f"fitness: {self.fitness}")
-        # print(f"porta de entrada: \n x: {self.portax}, y: {self.portay}")
+        print(f"porta de entrada: \n x: {self.portax}, y: {self.portay}")
        
         self.printFloors()
 
     def printFloors(self):
         for andar in self.andares:
             andar.print()
+            print(andar.corridors)
 
     def calcFitness(self):
         fitness = 0
@@ -734,29 +735,41 @@ def addExternalSimbol(comodo, planta, dir, simbol):
 
     match dir:
         case 'C':
-            r = randint(ix, fx)
-            planta[iy][r] = simbol
-            comodo.janelax = r
-            comodo.janelay = iy
+            while True:
+                r = randint(ix, fx)
+                if planta[iy][r].isdigit():
+                    planta[iy][r] = simbol
+                    comodo.janelax = r
+                    comodo.janelay = iy
+                    break
 
         case 'B':
-            r = randint(ix, fx)
-            planta[fy][r] = simbol
-            comodo.janelax = r
-            comodo.janelay = fy
+            while True:
+                r = randint(ix, fx)
+                if planta[fy][r].isdigit():
+                    planta[fy][r] = simbol
+                    comodo.janelax = r
+                    comodo.janelay = fy
+                    break
 
 
         case 'E':
-            r = randint(iy, fy)
-            planta[r][ix] = simbol
-            comodo.janelax = ix
-            comodo.janelay = r
+            while True:
+                r = randint(iy, fy)
+                if planta[r][ix].isdigit():
+                    planta[r][ix] = simbol
+                    comodo.janelax = ix
+                    comodo.janelay = r
+                    break
 
         case 'D':
-            r = randint(iy, fy)
-            planta[r][fx] = simbol
-            comodo.janelax = fx
-            comodo.janelay = r
+            while True:
+                r = randint(iy, fy)
+                if planta[r][fx].isdigit():
+                    planta[r][fx] = simbol
+                    comodo.janelax = fx
+                    comodo.janelay = r
+                    break
 
 
 
@@ -841,6 +854,7 @@ def drawAndar(casa, andar, direcao, reset = True, inseridos = None):
     if not andar.planta or reset:
         reset = True
         andar.iniciaPlanta(width, height)
+        andar.corridors = []
 
     planta = andar.planta
 
@@ -1034,10 +1048,8 @@ def mutate(pai, direcao):
 
 pop = []
 popSize = 10
-geracoes = 1000
-
+geracoes = 100
 def main():
-
     with open('input_data.txt', 'r') as file:
         data = file.readline().strip()
         
@@ -1048,14 +1060,13 @@ def main():
         letter = parts[2]
     
     dir = letter
-
     geraPopInicial(width, height, dir)
     # printPop(pop)
     pop.sort(key = getFitness, reverse = True)
 
     # # # TODO: desenhar as casas
     for i in range(0, geracoes):
-        # print(f"geracao {i + 1}---------")
+        print(f"geracao {i + 1}-------------------------------")
         selectParentes(dir)
         pop.sort(key = getFitness, reverse = True)
         # printPop(pop)
@@ -1066,6 +1077,7 @@ def main():
     pop[0].printHouse()
 
     return pop[0]
+
 
 
 if __name__ == "__main__":
