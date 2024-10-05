@@ -8,17 +8,16 @@ PIXEL_METRO = 50
 LINE_WIDTH = 1
 
 comodos_cores = {
-    'sala': cor.DARK_GRAY,
-    'cozinha': cor.SILVER,
+    'sala': cor.YELLOW,
+    'cozinha': cor.ORANGE,
     'banheiro': cor.AQUA,
-    'corredor': cor.LIGHT_GRAY,
+    'corredor': cor.GRAY,
     'escada': cor.SANDY_BROWN,
     'salaDeJantar': cor.TOMATO,
-    'areaServico': cor.GOLD,
+    'areaServico': cor.SILVER,
     'closet': cor.PURPLE,
     'quarto': cor.OLIVE,
-    'ginastica': cor.CHOCOLATE,
-    'corredor': cor.RED,
+    'ginastica': cor.GOLD,
 }
 
 # Adicione esta variável global no início do arquivo
@@ -42,20 +41,36 @@ def draw_pAndar_floor(screen, width, height):
 import pygame
 
 # Adicione esta variável global no início do arquivo
+frame_counter = 0
 
 def draw_rooms(screen, rooms, moveis, andar):
-    
+    global frame_counter
+
     # Configuração da fonte
     font = pygame.font.Font(None, 36)  # Você pode ajustar o tamanho da fonte conforme necessário
     
     for room in rooms:
-        id, comodo, x, y, width, height, *rest = room
+
         janela = None
         porta = None
+
+        id, comodo, x, y, width, height, *rest = room
         
-        if len(rest) >= 2:
-            janela = rest[0]
-            porta = rest[1]
+        
+        if len(rest) == 1:
+            if isinstance(rest[0], mv.Janela):
+                janela = rest[0]
+            elif isinstance(rest[0], mv.Porta):
+                porta = rest[0]
+        elif len(rest) == 2:
+            if isinstance(rest[0], mv.Janela):
+                janela = rest[0]
+            elif isinstance(rest[0], mv.Porta):
+                porta = rest[0]
+            if isinstance(rest[1], mv.Janela):
+                janela = rest[1]
+            elif isinstance(rest[1], mv.Porta):
+                porta = rest[1]
         
         pygame.draw.rect(screen, comodos_cores[comodo], (x, y, width, height))
         
@@ -70,6 +85,8 @@ def draw_rooms(screen, rooms, moveis, andar):
                 janela.drawH(screen)
             elif janela.altura:
                 janela.drawV(screen)
+
+        frame_counter += 1
         
         # Desenha os móveis do cômodo atual
         mv.draw_furnitures(screen, comodo, andar, moveis)
@@ -101,25 +118,29 @@ def draw_porta_frontal(screen, portaFrontal):
             portaFrontal.drawV(screen)
 
 # Função para desenhar a planta baixa do andar selecionado
-def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, CORRIDORS, MOVEIS, LIMITES, portaFrontal):
+def draw_floor_plan(screen, floor, largura_casa, altura_casa, ROOMS, CORRIDORS, MOVEIS_ESCOLHIDOS, LIMITES, portaFrontal):
     screen.fill(cor.WHITE)
 
     if floor == 'laje':
         # draw_laje(screen, largura_casa, altura_casa)
         draw_limites(screen, LIMITES["Laje"])
         draw_corridors(screen, CORRIDORS["Laje"], "Laje")
-        draw_rooms(screen, ROOMS["Laje"], MOVEIS, "Laje")
+        draw_rooms(screen, ROOMS["Laje"], MOVEIS_ESCOLHIDOS, "Laje")
+        desenhar_legenda(screen, MOVEIS_ESCOLHIDOS, LIMITES["Laje"], "Laje")
     elif floor == 'terreo':
         # draw_terreo_floor(screen, largura_casa, altura_casa)
         draw_limites(screen, LIMITES["Térreo"])
         draw_corridors(screen, CORRIDORS["Térreo"], "Térreo")
-        draw_rooms(screen, ROOMS["Térreo"], MOVEIS,"Térreo")
+        draw_rooms(screen, ROOMS["Térreo"], MOVEIS_ESCOLHIDOS,"Térreo")
         draw_porta_frontal(screen, portaFrontal)
+        desenhar_legenda(screen, MOVEIS_ESCOLHIDOS, LIMITES["Térreo"], "Térreo")
     elif floor == 'pAndar':
         # draw_pAndar_floor(screen, largura_casa, altura_casa)
         draw_limites(screen, LIMITES["1 Andar"])
         draw_corridors(screen, CORRIDORS["1 Andar"], "1 Andar")
-        draw_rooms(screen, ROOMS["1 Andar"], MOVEIS, "1 Andar")
+        draw_rooms(screen, ROOMS["1 Andar"], MOVEIS_ESCOLHIDOS, "1 Andar")
+        desenhar_legenda(screen, MOVEIS_ESCOLHIDOS, LIMITES["1 Andar"], "1 Andar")
+
 def coords(screen, width, height):
     x = round((screen.get_width() - width) // 2)
     y = round((screen.get_height() - height) // 2)
@@ -253,3 +274,57 @@ def converter_para_pixels_e_limitar(x, y, largura, altura, escala, largura_plant
         altura_pixel = altura_planta - y_pixel
 
     return x_pixel, y_pixel, largura_pixel, altura_pixel
+
+def desenhar_legenda(planta, moveis_escolhidos, limites, andar_atual):
+    # Definir posição inicial da legenda
+    x_legenda = limites[2] + 200  # À direita do andar
+    y_legenda = limites[1]  # Alinhado com o topo do andar
+    
+    # Definir tamanho do retângulo de cor e espaçamento
+    tamanho_rect = 15
+    espaco = 5
+    
+    # Definir fonte
+    fonte = pygame.font.SysFont('Arial', 14)
+    
+    # Calcular o tamanho da legenda
+    largura_legenda = 200
+    altura_legenda = limites[3] - limites[1]
+    
+    # Desenhar o fundo da legenda
+    cor_fundo = cor.LIGHT_GRAY  # Definir uma cor de fundo clara
+    pygame.draw.rect(planta, cor_fundo, (x_legenda, y_legenda, largura_legenda, altura_legenda))
+    
+    # Adicionar uma borda à legenda
+    pygame.draw.rect(planta, cor.BLACK, (x_legenda, y_legenda, largura_legenda, altura_legenda), 1)
+    
+    # Título da legenda
+    titulo = fonte.render("Legenda de Móveis", True, (0, 0, 0))
+    planta.blit(titulo, (x_legenda + 5, y_legenda + 5))
+    y_legenda += 25
+    
+    # Iterar sobre os móveis escolhidos do andar atual
+    for comodo_id, moveis in moveis_escolhidos:
+        if comodo_id.startswith(andar_atual):
+            for movel in moveis:
+                # Desenhar retângulo com a cor do móvel
+                pygame.draw.rect(planta, movel.cor, (x_legenda + 5, y_legenda, tamanho_rect, tamanho_rect))
+                
+                # Escrever o nome do móvel
+                texto = fonte.render(movel.nome, True, (0, 0, 0))
+                planta.blit(texto, (x_legenda + tamanho_rect + espaco + 5, y_legenda))
+                
+                y_legenda += tamanho_rect + espaco
+            
+            # Adicionar espaço extra entre cômodos
+            y_legenda += 10
+        
+        # Verificar se a legenda ultrapassou o limite inferior do andar
+            if y_legenda > limites[3] - 20:
+                # Mover para uma nova coluna à direita
+                x_legenda += largura_legenda
+                y_legenda = limites[1]
+                
+                # Desenhar novo fundo para a nova coluna
+                pygame.draw.rect(planta, cor_fundo, (x_legenda, limites[1], largura_legenda, altura_legenda))
+                pygame.draw.rect(planta, cor.BLACK, (x_legenda, limites[1], largura_legenda, altura_legenda), 1)

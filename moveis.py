@@ -95,7 +95,7 @@ class Corredor:
         self.y = y
         self.largura = escala
         self.altura = escala
-        self.cor = (255, 0, 0) 
+        self.cor = (128, 128, 128) 
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.cor, (self.x, self.y, self.largura, self.altura))
@@ -106,7 +106,7 @@ class PortaFrontal:
         self.y = y
         self.escala = escala
         self.orientacao = orientacao
-        self.cor = (255, 255, 0)
+        self.cor = (255, 0, 0)
 
         if (orientacao == "H"):
             self.largura = escala
