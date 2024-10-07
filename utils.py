@@ -301,8 +301,6 @@ def desenhar_legenda(planta, moveis_escolhidos, limites, andar_atual):
     titulo = fonte.render("Legenda de Móveis", True, (0, 0, 0))
     planta.blit(titulo, (x_legenda + 5, y_legenda + 5))
     y_legenda += 25
-
-    print(moveis_escolhidos)
     
     # Iterar sobre os móveis escolhidos do andar atual
     for comodo_id, moveis in moveis_escolhidos.items():

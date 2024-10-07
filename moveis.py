@@ -7,22 +7,15 @@ LINE_WIDTH = 1
 LINE_WIDTH2 = 5
 
 def draw_furnitures(screen, comodo, andar, moveis_escolhidos):
-    # Percorre a lista de móveis escolhidos, independentemente do nome do cômodo
-    for comodo_movel in moveis_escolhidos:
-        comodo_id = comodo_movel[0]  # ID do cômodo
-          # Lista de móveis para esse cômodo
-
-        # print("comodo: ", comodo, "ANDAR: ", andar, "MOVEIS", comodo_movel)
-        # print(comodo_movel[0].split('_'))
-
-        # Para cada móvel na lista de móveis selecionados, desenha o móvel na tela
-        check = comodo_id.split('_')
-        if check[0] == andar and check[1] == comodo:
-            moveis_selecionados = comodo_movel[1]
-            # print(comodo_id)
-            for movel in moveis_selecionados:
-                # Desenha o móvel na tela usando pygame
-                pygame.draw.rect(screen, movel.cor, (movel.x, movel.y, movel.largura, movel.altura))
+    # Verifica se moveis_escolhidos é um dicionário
+    if isinstance(moveis_escolhidos, dict):
+        for chave, moveis in moveis_escolhidos.items():
+            check = chave.split('_')
+            if check[0] == andar and check[1] == comodo:
+                # moveis já é a lista de móveis selecionados
+                for movel in moveis:
+                    # Desenha o móvel na tela usando pygame
+                    pygame.draw.rect(screen, movel.cor, (movel.x, movel.y, movel.largura, movel.altura))
 
 class movel:
     def __init__(self, nome, largura, altura, cor, escala, medidas):
